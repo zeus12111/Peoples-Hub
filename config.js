@@ -15,5 +15,5 @@ window.PH_CONFIG = {
 
   /* Workstation (staff schedule). Paste the /exec URL of the
      "People Hub Workstation" Apps Script here. See SETUP.md. */
-  workstationUrl: ""
+  workstationUrl: "https://script.google.com/macros/s/AKfycbzadB9v0_K0sNiwstAoIC2LB6CU5F7I02zV5mszimI27fBrYGcJiBqoPBUhIDXm_5ww/exec"
 };
