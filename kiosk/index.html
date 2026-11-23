@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Welcome — Assessment Station</title>
+<link rel="icon" href="../assets/compliance-ph.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E2540; --ink-soft:#4A5A6E; --ink-faint:#7B8899;
+    --surface:#F4F6FA; --card:#FFF; --line:#E1E7EF; --line-soft:#EDF1F7;
+    --blue:#1273C7; --blue-deep:#0B4E8A; --blue-tint:#E6F1FB; --blue-bright:#2BA9F2;
+    --navy:#0C2340;
+    --shadow:0 1px 2px rgba(14,37,64,.04), 0 12px 34px -16px rgba(14,37,64,.25);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--surface);
+       line-height:1.55;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100%}
+  .bar{background:#fff;border-bottom:1px solid var(--line)}
+  .bar-in{max-width:1000px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+  .logos{display:flex;align-items:center;gap:16px}
+  .logos img{height:34px;width:auto;display:block}
+  .logos .d{width:1px;height:26px;background:var(--line)}
+  .fs{font:inherit;font-size:.76rem;font-weight:600;color:var(--ink-faint);background:none;border:1px solid var(--line);
+      border-radius:8px;padding:6px 11px;cursor:pointer}
+  .fs:hover{background:var(--line-soft);color:var(--ink)}
+
+  main{flex:1;display:flex;align-items:center;justify-content:center;padding:34px 24px 60px}
+  .inner{width:100%;max-width:900px}
+  .hello{text-align:center;margin-bottom:34px}
+  .kicker{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+          color:var(--blue-deep);font-weight:600}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:2.5rem;letter-spacing:-.03em;line-height:1.06;margin:10px 0 0}
+  .hello p{color:var(--ink-soft);margin-top:12px;font-size:1.05rem}
+  @media(max-width:640px){h1{font-size:1.9rem}}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+  .pick{position:relative;text-align:left;text-decoration:none;background:var(--card);border:1px solid var(--line);
+        border-radius:16px;padding:22px;box-shadow:var(--shadow);cursor:pointer;
+        transition:transform .12s ease, box-shadow .12s ease, border-color .12s}
+  .pick::before{content:"";position:absolute;left:0;top:20px;bottom:20px;width:3px;border-radius:0 3px 3px 0;background:var(--blue)}
+  .pick:hover{transform:translateY(-3px);border-color:#BFD7EE;box-shadow:0 4px 8px rgba(14,37,64,.05),0 22px 44px -20px rgba(14,37,64,.35)}
+  .pick h2{font-family:'Space Grotesk',sans-serif;font-size:1.14rem;font-weight:600;letter-spacing:-.01em}
+  .pick p{font-size:.88rem;color:var(--ink-soft);margin-top:6px}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+  .chip{font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:600;background:var(--blue-tint);
+        color:var(--blue-deep);padding:4px 9px;border-radius:20px}
+
+  .foot{text-align:center;margin-top:32px;color:var(--ink-faint);font-size:.85rem}
+  .foot b{color:var(--ink-soft)}
+</style>
+</head>
+<body>
+
+<div class="bar"><div class="bar-in">
+  <div class="logos">
+    <img src="../assets/compliance-ph.png" alt="Compliance PH Inc.">
+    <span class="d"></span>
+    <img src="../assets/aos.png" alt="Australian Outsourcing Services">
+    <span class="d"></span>
+    <img src="../assets/leads-direct.png" alt="Leads Direct">
+  </div>
+  <button class="fs" id="fs">Full screen</button>
+</div></div>
+
+<main><div class="inner">
+  <div class="hello">
+    <div class="kicker">Assessment Station</div>
+    <h1>Welcome — thanks for coming in</h1>
+    <p>Please select the assessment our staff asked you to take.</p>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="foot">Not sure which one? Please ask our staff before you begin. <b>Each assessment is timed and can only be taken once.</b></div>
+</div></main>
+
+<script>
+/* ============================================================
+   EDIT HERE — the tiles shown on the station.
+   Set show:false to hide one from the station.
+   ============================================================ */
+const STATION = [
+  { title:"Typing Test", desc:"Speed and accuracy check. Any role.",
+    chips:["1 min"], href:"../typing/", show:true },
+
+  { title:"Customer Service Representative", desc:"English, comprehension and customer judgment.",
+    chips:["~3 min","14 questions"], href:"../csr/", show:true },
+
+  { title:"Quality Assurance Specialist", desc:"English accuracy, attention to detail, QA judgment and numeracy.",
+    chips:["15 min","30 questions"], href:"../qa/", show:true },
+
+  { title:"Social Media Associate", desc:"Platforms, content, scheduling tools, community management and analytics.",
+    chips:["25 min","30 questions"], href:"../social/", show:true },
+
+  { title:"Virtual Assistant", desc:"General admin, tools, communication, organisation and judgment \u2014 graded Level 1\u20133.",
+    chips:["20 min","30 questions"], href:"../va/", show:true },
+
+  { title:"Administrative Assistant", desc:"Tools, grammar, working under pressure, typing and a short voice recording.",
+    chips:["15–20 min","Typing + voice"], href:"../admin-assistant/", show:true },
+
+  { title:"Account Knowledge — 2EZi & Buy't", desc:"Product knowledge and compliance handling for both accounts.",
+    chips:["10 min","24 questions"], href:"../account/", show:true }
+];
+
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+document.getElementById('grid').innerHTML = STATION.filter(t=>t.show).map(t=>`
+  <a class="pick" href="${esc(t.href)}?kiosk=1">
+    <h2>${esc(t.title)}</h2>
+    <p>${esc(t.desc)}</p>
+    <div class="chips">${(t.chips||[]).map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div>
+  </a>`).join('');
+
+/* full screen so the browser bar and other tabs are out of sight */
+document.getElementById('fs').addEventListener('click',()=>{
+  if(document.fullscreenElement){ document.exitFullscreen(); }
+  else { document.documentElement.requestFullscreen().catch(()=>{}); }
+});
+document.addEventListener('fullscreenchange',()=>{
+  document.getElementById('fs').textContent = document.fullscreenElement ? 'Exit full screen' : 'Full screen';
+});
+</script>
+</body>
+</html>

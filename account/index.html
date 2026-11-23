@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Account Knowledge Screening — 2EZi &amp; Buy't</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E2540; --ink-soft:#4A5663; --ink-faint:#7A858F;
+    --surface:#F4F6FA; --card:#FFFFFF; --line:#E1E7EF; --line-soft:#EDF1F7;
+    --teal:#1273C7; --teal-deep:#0B4E8A; --teal-tint:#E6F1FB;
+    --amber:#B7791F; --red:#B23A3F; --red-tint:#F8E9E9;
+    --shadow:0 1px 2px rgba(24,34,46,.04), 0 8px 28px -12px rgba(24,34,46,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--surface);line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100%}
+  .wrap{flex:1;width:100%;max-width:660px;margin:0 auto;padding:28px 20px 64px;display:flex;flex-direction:column}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-.01em;font-size:1.05rem}
+  .brand .dot{width:11px;height:11px;border-radius:3px;background:var(--teal);box-shadow:0 0 0 4px var(--teal-tint)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:30px;animation:rise .35s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.card{animation:none}}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-deep)}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.6rem;letter-spacing:-.02em;line-height:1.14;margin:8px 0 0}
+  h2{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.18rem;letter-spacing:-.01em;margin-bottom:4px}
+  p.lead{color:var(--ink-soft);margin-top:12px}
+  .muted{color:var(--ink-faint);font-size:.85rem}
+  .preview{margin:22px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:18px 0}
+  .preview-title{font-size:.8rem;font-weight:600;color:var(--ink-soft);margin-bottom:10px}
+  .preview ul{list-style:none;display:grid;gap:9px}
+  .preview li{display:flex;gap:10px;font-size:.9rem;color:var(--ink-soft)}
+  .preview li::before{content:"";flex:0 0 6px;height:6px;margin-top:8px;border-radius:2px;background:var(--teal)}
+  label.field{display:block;margin-top:16px}
+  label.field span{display:block;font-size:.85rem;font-weight:500;color:var(--ink);margin-bottom:6px}
+  input[type=text],input[type=email],input[type=tel]{width:100%;font:inherit;font-size:.95rem;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);transition:border-color .15s, box-shadow .15s}
+  input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-tint)}
+  .btn{font:inherit;font-weight:600;font-size:.95rem;border:none;border-radius:11px;padding:13px 20px;cursor:pointer;transition:transform .08s, background .15s;width:100%;margin-top:24px}
+  .btn-primary{background:var(--teal);color:#fff}
+  .btn-primary:hover{background:var(--teal-deep)}
+  .btn-primary:active{transform:translateY(1px)}
+  .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink);margin-top:10px}
+  .btn-ghost:hover{background:var(--line-soft)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn:focus-visible{outline:3px solid var(--teal-tint);outline-offset:2px}
+  .steps{display:flex;gap:6px;margin-bottom:20px}
+  .steps .seg{flex:1;height:5px;border-radius:3px;background:var(--line)}
+  .steps .seg.done{background:var(--teal)}
+  .steps .seg.active{background:var(--teal);opacity:.45}
+  .timer-wrap{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .timer-label{font-size:.8rem;color:var(--ink-faint)}
+  .timer-val{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.05rem;color:var(--ink)}
+  .timer-bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-bottom:24px}
+  .timer-fill{height:100%;width:100%;background:var(--teal);transition:width 1s linear, background .4s}
+  .qcount{font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--ink-faint);margin-bottom:6px}
+  .qtext{font-size:1.06rem;font-weight:500;line-height:1.4;margin-bottom:4px}
+  .passage{background:var(--line-soft);border-radius:11px;padding:14px 16px;font-size:.92rem;color:var(--ink-soft);margin:14px 0;white-space:pre-line}
+  .options{display:grid;gap:10px;margin-top:18px}
+  .opt{display:flex;align-items:flex-start;gap:11px;border:1px solid var(--line);border-radius:11px;padding:13px 15px;cursor:pointer;font-size:.94rem;transition:border-color .12s, background .12s}
+  .opt:hover{border-color:var(--teal);background:var(--teal-tint)}
+  .opt input{margin-top:2px;accent-color:var(--teal);flex:0 0 auto}
+  .opt.sel{border-color:var(--teal);background:var(--teal-tint)}
+  .navrow{display:flex;gap:10px;margin-top:26px}
+  .navrow .btn{margin-top:0}
+  .navrow .btn-ghost{flex:0 0 auto;width:auto;padding:13px 18px}
+  .navrow .btn-primary{flex:1}
+  .done-mark{width:54px;height:54px;border-radius:50%;background:var(--teal-tint);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+  .done-mark svg{width:26px;height:26px;stroke:var(--teal-deep);stroke-width:2.4;fill:none}
+  .note{font-size:.78rem;color:var(--ink-faint);margin-top:18px;text-align:center}
+  .brand{text-decoration:none;color:var(--ink)}
+  .blogo{height:30px;width:auto;display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar"><a class="brand" href="../" title="Back to hub"><img class="blogo" src="../assets/compliance-ph.png" alt="Compliance PH Inc."><span id="brandName">Compliance PH Inc.</span></a></div>
+  <div id="app"></div>
+  <div class="note" id="footNote"></div>
+</div>
+
+<script src="/config.js"></script>
+<script>
+/* ============================================================
+   CONFIG  —  edit these, then save the file
+   ============================================================ */
+const CONFIG = {
+  companyName: "Compliance PH Inc.",
+  roleTitle: "Account Knowledge — 2EZi & Buy't",
+  timeLimitSeconds: 600,          // 10 minutes. Adjust as needed.
+  numQuestions: 24,               // questions sampled from the BANK below (bank has 29)
+
+  // Set once in /config.js — no need to edit this line.
+  apiEndpoint: (window.PH_CONFIG&&window.PH_CONFIG.apiUrl)||"",
+  submitToken: "ph-hub-submit-key",   // must match SUBMIT_TOKEN in the People Hub API script
+
+  strongThreshold: 80,            // % to label "Interview / Ready"
+  reviewThreshold: 65,            // % to label "Review"; below = "Not yet ready"
+
+  jobPreview: [
+    "Knowledge of the 2EZi money club and the Buy't marketplace",
+    "How Qoin rewards and dual-currency (AUD + Qoin) payments work",
+    "Compliance basics: accurate claims only — no financial advice or guarantees",
+    "Day shift on Australian hours (early start), with reliable attendance"
+  ]
+};
+
+/* ============================================================
+   QUESTION BANK  (correct option marked c:true)
+   types: twoezi | buyt | compliance
+   NOTE: every "best response" models honest, compliant handling.
+   ============================================================ */
+const BANK = [
+  /* ---- 2EZi ---- */
+  {type:'twoezi', q:'What is 2EZi?', o:[
+    {t:'A membership savings, cashback, rewards and giveaways club (a \u201cmoney club\u201d)',c:true},
+    {t:'A licensed Australian bank'},
+    {t:'A cryptocurrency exchange'},
+    {t:'A government savings scheme'}]},
+  {type:'twoezi', q:'How does 2EZi describe itself in its marketing?', o:[
+    {t:'\u201cAustralia\u2019s easiest way to save, earn & win\u201d',c:true},
+    {t:'\u201cAustralia\u2019s largest retail bank\u201d'},
+    {t:'\u201cA licensed investment fund\u201d'},
+    {t:'\u201cA government rebate program\u201d'}]},
+  {type:'twoezi', q:'2EZi offers a free tier and a Premium membership costing about:', o:[
+    {t:'$2.50 per week',c:true},{t:'$25 per week'},{t:'$2.50 per day'},{t:'There is no paid tier'}]},
+  {type:'twoezi', q:'Which is a benefit advertised to 2EZi members?', o:[
+    {t:'Discounts on grocery shops at Coles and Woolworths',c:true},
+    {t:'Free company shares'},
+    {t:'Guaranteed investment returns'},
+    {t:'A personal loan on sign-up'}]},
+  {type:'twoezi', q:'2EZi\u2019s giveaways are best described as:', o:[
+    {t:'Daily and monthly prize draws (e.g. a monthly trip for two)',c:true},
+    {t:'Guaranteed cash payouts to every member'},
+    {t:'A fixed monthly dividend'},
+    {t:'Interest on a savings account'}]},
+  {type:'twoezi', q:'2EZi members can earn rewards in the form of:', o:[
+    {t:'Cash, Qoin, and discounts',c:true},
+    {t:'Company shares'},
+    {t:'Gold bullion'},
+    {t:'Government bonds'}]},
+  {type:'twoezi', q:'The main 2EZi website domain is:', o:[
+    {t:'2ezi.au',c:true},{t:'2ezi.bank'},{t:'tooezi.gov.au'},{t:'qoin2ezi.com'}]},
+  {type:'twoezi', q:'A customer cites a membership figure such as \u201c188,373+ members.\u201d An agent should remember that:', o:[
+    {t:'These are the company\u2019s own marketing claims and are not independently verified',c:true},
+    {t:'They are audited government figures'},
+    {t:'They are exact, verified totals'},
+    {t:'They guarantee the service\u2019s performance'}]},
+  {type:'twoezi', q:'A customer asks what kind of business 2EZi is. The most accurate answer is:', o:[
+    {t:'A membership rewards and savings program \u2014 not a bank or investment fund',c:true},
+    {t:'A licensed bank'},
+    {t:'A regulated investment fund'},
+    {t:'A government agency'}]},
+
+  /* ---- Buy't ---- */
+  {type:'buyt', q:'What is Buy\u2019t?', o:[
+    {t:'An Australian online marketplace and business directory',c:true},
+    {t:'A bank'},
+    {t:'A cryptocurrency wallet app'},
+    {t:'A parcel courier service'}]},
+  {type:'buyt', q:'Buy\u2019t\u2019s defining payment feature is:', o:[
+    {t:'Dual-currency pricing \u2014 pay with a mix of AUD and an approved digital currency (Qoin)',c:true},
+    {t:'Australian dollars only'},
+    {t:'Digital currency only'},
+    {t:'Buy-now-pay-later only'}]},
+  {type:'buyt', q:'On a Buy\u2019t listing shown as \u201c($36.00 + $4.00)\u201d, the first figure ($36.00) is:', o:[
+    {t:'The cash (AUD) portion of the price',c:true},
+    {t:'The Qoin portion of the price'},
+    {t:'GST'},
+    {t:'The shipping fee'}]},
+  {type:'buyt', q:'On that same listing, the asterisked second figure ($4.00) is:', o:[
+    {t:'The portion payable in digital currency (Qoin)',c:true},
+    {t:'A discount'},
+    {t:'A processing fee'},
+    {t:'The delivery cost'}]},
+  {type:'buyt', q:'Which set of categories does Buy\u2019t operate across?', o:[
+    {t:'Eat & Drink, Health & Beauty, Retail & Shopping, Travel & Accommodation, Entertainment & Leisure',c:true},
+    {t:'Loans, insurance and superannuation'},
+    {t:'Electronics only'},
+    {t:'Restaurants only'}]},
+  {type:'buyt', q:'Besides physical products, Buy\u2019t also offers:', o:[
+    {t:'Merchant vouchers and business directory listings',c:true},
+    {t:'Bank accounts'},
+    {t:'Share trading'},
+    {t:'Mortgages'}]},
+  {type:'buyt', q:'A business that wants to sell on Buy\u2019t would use:', o:[
+    {t:'The \u201cBuy\u2019t for Business\u201d registration path',c:true},
+    {t:'A bank loan application'},
+    {t:'The ASIC portal'},
+    {t:'A Qoin wallet only'}]},
+  {type:'buyt', q:'Buy\u2019t is based in:', o:[
+    {t:'The Gold Coast, Queensland',c:true},{t:'Sydney, New South Wales'},{t:'Auckland, New Zealand'},{t:'Perth, Western Australia'}]},
+  {type:'buyt', q:'Buy\u2019t is best understood as:', o:[
+    {t:'A storefront where Qoin (and AUD) can be spent on real goods and services',c:true},
+    {t:'A licensed bank'},
+    {t:'A stock exchange'},
+    {t:'A money-transfer service'}]},
+
+  /* ---- Qoin & compliance ---- */
+  {type:'compliance', q:'Qoin is:', o:[
+    {t:'A digital token used as a reward and payment method within the ecosystem',c:true},
+    {t:'Official Australian government currency'},
+    {t:'A bank savings account'},
+    {t:'A credit card'}]},
+  {type:'compliance', q:'According to 2EZi\u2019s own disclaimer, Qoin tokens given through the program are:', o:[
+    {t:'Promotional rewards \u2014 not financial products, securities, or regulated investments',c:true},
+    {t:'Government-guaranteed savings'},
+    {t:'Shares in the company'},
+    {t:'A licensed managed investment'}]},
+  {type:'compliance', q:'A customer asks, \u201cIs Qoin guaranteed to rise in value and convert to cash anytime?\u201d The best, compliant response is:', o:[
+    {t:'Explain that Qoin is a promotional reward, you can\u2019t guarantee its value or a specific cash conversion, and share only approved information',c:true},
+    {t:'\u201cYes, it always goes up and you can cash out fully anytime.\u201d'},
+    {t:'\u201cYes, it\u2019s government-backed, so it\u2019s safe.\u201d'},
+    {t:'\u201cDefinitely \u2014 I guarantee you\u2019ll make money.\u201d'}]},
+  {type:'compliance', q:'A customer asks whether they should put their savings into Qoin. As an agent you should:', o:[
+    {t:'Explain you can\u2019t give financial or investment advice, share factual program info, and suggest licensed advice for investment decisions',c:true},
+    {t:'Tell them to invest as much as they can'},
+    {t:'Promise high returns to reassure them'},
+    {t:'Guarantee it is completely safe'}]},
+  {type:'compliance', q:'Why must agents stick to approved, accurate claims and avoid over-promising about Qoin?', o:[
+    {t:'Misleading or false claims can breach consumer-protection rules and have led to regulatory penalties; accuracy protects customers and the company',c:true},
+    {t:'Because the manager simply prefers it'},
+    {t:'Because it makes sales close faster'},
+    {t:'There is no real reason'}]},
+  {type:'compliance', q:'A customer is upset they can\u2019t easily cash out their Qoin. The best approach is:', o:[
+    {t:'Stay calm, acknowledge the concern, give accurate information, and follow the approved process or escalate \u2014 without making promises you can\u2019t keep',c:true},
+    {t:'Promise an immediate full cash-out to calm them down'},
+    {t:'Tell them it\u2019s their own fault'},
+    {t:'End the call'}]},
+  {type:'compliance', q:'Which statement is one an agent must NOT make to a customer?', o:[
+    {t:'\u201cQoin is a guaranteed investment that always increases in value.\u201d',c:true},
+    {t:'\u201cQoin is a reward you can spend on Buy\u2019t.\u201d'},
+    {t:'\u201cPremium membership is about $2.50 a week.\u201d'},
+    {t:'\u201c2EZi runs daily and monthly giveaways.\u201d'}]},
+  {type:'compliance', q:'You\u2019re unsure about a customer\u2019s question on fees, terms, or Qoin. You should:', o:[
+    {t:'Avoid guessing \u2014 check approved resources or escalate to get the correct answer',c:true},
+    {t:'Make your best guess confidently'},
+    {t:'Tell the customer no one knows'},
+    {t:'Promise whatever ends the call fastest'}]},
+  {type:'compliance', q:'Before discussing a customer\u2019s account details, an agent should first:', o:[
+    {t:'Verify the customer\u2019s identity according to policy',c:true},
+    {t:'Offer them a Qoin bonus'},
+    {t:'Ask for their password'},
+    {t:'Share the balance straight away'}]},
+  {type:'compliance', q:'A customer asks if 2EZi or Buy\u2019t is a bank or licensed financial institution. The accurate answer is:', o:[
+    {t:'No \u2014 they are a rewards/savings membership and a marketplace, not a bank; Qoin rewards are promotional, not regulated financial products',c:true},
+    {t:'Yes, both are licensed banks'},
+    {t:'Yes, they are government-backed'},
+    {t:'Both are regulated investment funds'}]},
+  {type:'compliance', q:'A customer raises concerns about Qoin\u2019s regulatory history. The most appropriate approach is:', o:[
+    {t:'Stay professional and honest, give only approved information, and escalate if needed \u2014 never argue or make claims you can\u2019t support',c:true},
+    {t:'Deny that anything happened'},
+    {t:'Tell the customer they are wrong'},
+    {t:'Dismiss the concern and change the subject'}]}
+];
+
+/* ============================================================
+   FIT / BACKGROUND  (flagged, not scored right/wrong)
+   ============================================================ */
+const FIT = [
+  {id:'nightshift', q:'These accounts follow Australian business hours, so the shift starts early in the morning (often around 6\u20137 AM). Can you reliably start that early, every shift?', o:['Yes','No','Depends on the details'], flagIf:{'No':'hard'}},
+  {id:'attendance', q:'Can you reliably commit to your assigned schedule and be on time every day?', o:['Yes, always','Most of the time','No'], flagIf:{'No':'hard','Most of the time':'soft'}},
+  {id:'internet', q:'You\u2019ll be working from home. Do you have stable internet, a quiet space, and a backup for power or internet during brownouts?', o:['Yes, all three','Internet only, no backup','No'], flagIf:{'No':'hard','Internet only, no backup':'soft'}},
+  {id:'compliance', q:'This is a financial-rewards account with strict compliance rules: you must give accurate information only, and never financial advice or guarantees. Are you comfortable working within those rules?', o:['Yes, comfortable','Somewhat','No'], flagIf:{'No':'soft','Somewhat':'soft'}},
+  {id:'start', q:'How soon can you start?', o:['Immediately','1\u20132 weeks','2\u20134 weeks','More than a month'], flagIf:{}}
+];
+
+/* ============================================================
+   Send a submission to the Google Sheet endpoint
+   ============================================================ */
+async function saveSubmission(rec){
+  if(!CONFIG.apiEndpoint){ console.warn('No sheetEndpoint set \u2014 submission not saved.'); return; }
+  try{
+    await fetch(CONFIG.apiEndpoint, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(rec)});
+  }catch(e){ console.error('Submission failed:', e); }
+}
+
+/* ============================================================
+   App
+   ============================================================ */
+const app = document.getElementById('app');
+document.getElementById('brandName').textContent = CONFIG.companyName;
+document.getElementById('footNote').textContent = CONFIG.apiEndpoint
+  ? 'Your answers are sent securely to our hiring team.'
+  : 'Setup note: paste your Google Sheet URL into CONFIG.apiEndpoint before going live.';
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+let state = {};
+function resetState(){
+  const sampled = shuffle(BANK).slice(0, Math.min(CONFIG.numQuestions, BANK.length)).map(q => ({...q, o: shuffle(q.o)}));
+  state = {candidate:{name:'',email:'',phone:''}, fit:{}, fitIdx:0, questions:sampled, qIdx:0, answers:{}, timeLeft:CONFIG.timeLimitSeconds, timer:null, startedAt:null};
+}
+
+function renderIntro(){
+  const mins=Math.round(CONFIG.timeLimitSeconds/60);
+  app.innerHTML = `
+  <div class="card">
+    <div class="eyebrow">Account readiness check</div>
+    <h1>${esc(CONFIG.roleTitle)}</h1>
+    <p class="lead">This assessment has ${CONFIG.numQuestions} questions and a ${mins}-minute time limit. It checks your understanding of the 2EZi and Buy\u2019t accounts and how to handle customers accurately and within the rules.</p>
+    <div class="preview"><div class="preview-title">What this covers</div><ul>${CONFIG.jobPreview.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+    <label class="field"><span>Full name</span><input id="c_name" type="text" autocomplete="name" placeholder="Juan Dela Cruz"></label>
+    <label class="field"><span>Email</span><input id="c_email" type="email" autocomplete="email" placeholder="you@email.com"></label>
+    <label class="field"><span>Mobile number</span><input id="c_phone" type="tel" autocomplete="tel" placeholder="09xx xxx xxxx"></label>
+    <button class="btn btn-primary" id="startBtn" disabled>Start assessment</button>
+  </div>`;
+  const n=document.getElementById('c_name'),e=document.getElementById('c_email'),p=document.getElementById('c_phone'),b=document.getElementById('startBtn');
+  const chk=()=>{b.disabled=!(n.value.trim()&&e.value.trim()&&p.value.trim());};
+  [n,e,p].forEach(el=>el.addEventListener('input',chk));
+  b.addEventListener('click',()=>{state.candidate={name:n.value.trim(),email:e.value.trim(),phone:p.value.trim()};renderFit();});
+}
+
+function renderFit(){
+  const i=state.fitIdx, item=FIT[i];
+  app.innerHTML = `
+  <div class="card">
+    <div class="steps">${segs(0)}</div>
+    <div class="qcount">About you \u00b7 ${i+1} of ${FIT.length}</div>
+    <div class="qtext">${esc(item.q)}</div>
+    <div class="options" id="opts">${item.o.map(t=>`<label class="opt"><input type="radio" name="fit" value="${esc(t)}"><span>${esc(t)}</span></label>`).join('')}</div>
+    <div class="navrow">${i>0?'<button class="btn btn-ghost" id="back">Back</button>':''}<button class="btn btn-primary" id="next" disabled>${i===FIT.length-1?'Continue to test':'Next'}</button></div>
+  </div>`;
+  wireOptions(()=>{document.getElementById('next').disabled=false;});
+  const pre=state.fit[item.id];
+  if(pre!==undefined){const lbl=[...document.querySelectorAll('#opts .opt')].find(l=>l.querySelector('input').value===pre);if(lbl){lbl.classList.add('sel');lbl.querySelector('input').checked=true;document.getElementById('next').disabled=false;}}
+  document.getElementById('next').addEventListener('click',()=>{state.fit[item.id]=document.querySelector('input[name=fit]:checked').value;if(i===FIT.length-1){startTest();}else{state.fitIdx++;renderFit();}});
+  const back=document.getElementById('back'); if(back) back.addEventListener('click',()=>{state.fitIdx--;renderFit();});
+}
+
+function startTest(){
+  state.startedAt=Date.now(); state.timeLeft=CONFIG.timeLimitSeconds; state.qIdx=0;
+  if(state.timer) clearInterval(state.timer);
+  state.timer=setInterval(()=>{state.timeLeft--;updateTimer();if(state.timeLeft<=0){clearInterval(state.timer);finishTest(true);}},1000);
+  renderQuestion();
+}
+function updateTimer(){
+  const t=document.getElementById('timerVal'),f=document.getElementById('timerFill'); if(!t||!f) return;
+  const m=Math.floor(state.timeLeft/60),s=state.timeLeft%60; t.textContent=`${m}:${String(s).padStart(2,'0')}`;
+  const pct=Math.max(0,state.timeLeft/CONFIG.timeLimitSeconds*100); f.style.width=pct+'%';
+  f.style.background=pct<15?'var(--red)':pct<35?'var(--amber)':'var(--teal)';
+}
+function renderQuestion(){
+  const i=state.qIdx,q=state.questions[i],m=Math.floor(state.timeLeft/60),s=state.timeLeft%60;
+  app.innerHTML = `
+  <div class="card">
+    <div class="steps">${segs(1)}</div>
+    <div class="timer-wrap"><span class="timer-label">Time remaining</span><span class="timer-val" id="timerVal">${m}:${String(s).padStart(2,'0')}</span></div>
+    <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
+    <div class="qcount">Question ${i+1} of ${state.questions.length}</div>
+    <div class="qtext">${esc(q.q)}</div>
+    ${q.passage?`<div class="passage">${esc(q.passage)}</div>`:''}
+    <div class="options" id="opts">${q.o.map((opt,k)=>`<label class="opt" data-k="${k}"><input type="radio" name="q" value="${k}"><span>${esc(opt.t)}</span></label>`).join('')}</div>
+    <div class="navrow"><button class="btn btn-primary" id="next" disabled>${i===state.questions.length-1?'Finish':'Next'}</button></div>
+  </div>`;
+  updateTimer(); wireOptions(()=>{document.getElementById('next').disabled=false;});
+  const pre=state.answers[i];
+  if(pre!==undefined){const lbl=document.querySelector(`#opts .opt[data-k="${pre}"]`);if(lbl){lbl.classList.add('sel');lbl.querySelector('input').checked=true;document.getElementById('next').disabled=false;}}
+  document.getElementById('next').addEventListener('click',()=>{
+    state.answers[i]=parseInt(document.querySelector('input[name=q]:checked').value,10);
+    if(i===state.questions.length-1){clearInterval(state.timer);finishTest(false);}else{state.qIdx++;renderQuestion();}
+  });
+}
+
+async function finishTest(timedOut){
+  let correct=0; const byType={};
+  state.questions.forEach((q,i)=>{
+    if(!byType[q.type]) byType[q.type]=[0,0];
+    const a=state.answers[i]; const ok=a!==undefined&&q.o[a]&&q.o[a].c===true;
+    byType[q.type][1]++; if(ok){correct++;byType[q.type][0]++;}
+  });
+  const total=state.questions.length, pct=Math.round(correct/total*100);
+  const flags=[];
+  FIT.forEach(f=>{const v=state.fit[f.id];const lvl=f.flagIf[v];if(lvl) flags.push({level:lvl,text:flagText(f.id,v)});});
+  let band='below'; if(pct>=CONFIG.strongThreshold) band='strong'; else if(pct>=CONFIG.reviewThreshold) band='review';
+  if(band==='strong'&&flags.some(f=>f.level==='hard')) band='review';
+  const recLabel={strong:'Ready',review:'Review',below:'Not yet ready'}[band];
+  const rec={
+    token:CONFIG.submitToken, exam:'account', role:CONFIG.roleTitle,
+    name:state.candidate.name,email:state.candidate.email,phone:state.candidate.phone,
+    score:pct,correct,total,band,recommendation:recLabel,timedOut,
+    byType:Object.fromEntries(Object.entries(byType).map(([k,v])=>[k,v[1]?Math.round(v[0]/v[1]*100):''])),
+    answers:buildDetail(), fit:state.fit, flags, durationSec:state.startedAt?Math.round((Date.now()-state.startedAt)/1000):''
+  };
+  renderDone();
+  saveSubmission(rec);
+}
+function flagText(id,v){
+  const map={
+    nightshift:'Cannot start early for AU hours',
+    attendance:v==='No'?'Cannot commit to schedule':'Inconsistent attendance',
+    internet:v==='No'?'No reliable WFH setup':'No power/internet backup',
+    compliance:'Hesitant about strict compliance rules'
+  };
+  return map[id]||(id+': '+v);
+}
+function renderDone(){
+  if(state.timer) clearInterval(state.timer);
+  app.innerHTML = `
+  <div class="card" style="text-align:center">
+    <div class="done-mark"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+    <h2>Thanks, ${esc(state.candidate.name.split(' ')[0]||'there')} \u2014 you\u2019re all set</h2>
+    <p class="lead" style="margin-top:8px">Your assessment has been submitted to our hiring team. We\u2019ll be in touch about the next steps.</p>
+    <p class="muted" style="margin-top:18px">${KIOSK?'Please hand the computer back to our staff.':'You can close this window now.'}</p>
+  </div>`;
+  kioskReturn();
+}
+
+
+/* Builds the per-question answer sheet sent with the submission */
+function buildDetail(){
+  return state.questions.map(function(q,i){
+    var a=state.answers[i];
+    var chosen=(a!==undefined && q.o[a]) ? q.o[a].t : '';
+    var corrOpt=q.o.filter(function(o){return o.c===true;})[0];
+    var corr=corrOpt?corrOpt.t:'';
+    return {n:i+1, type:q.type, q:q.q, passage:q.passage||'', chosen:chosen, correct:corr,
+            ok:(chosen!=='' && chosen===corr)};
+  });
+}
+
+/* Kiosk mode: when opened from the station, hand back automatically for the next applicant */
+var KIOSK = new URLSearchParams(location.search).get('kiosk')==='1';
+function kioskReturn(){ if(KIOSK) setTimeout(function(){ location.href='../kiosk/'; }, 8000); }
+function wireOptions(onPick){
+  document.querySelectorAll('#opts .opt').forEach(lbl=>{
+    lbl.addEventListener('click',()=>{document.querySelectorAll('#opts .opt').forEach(x=>x.classList.remove('sel'));lbl.classList.add('sel');lbl.querySelector('input').checked=true;onPick();});
+  });
+}
+function segs(active){return [0,1].map(i=>`<div class="seg ${i<active?'done':i===active?'active':''}"></div>`).join('');}
+
+function init(){ if(KIOSK){var b=document.querySelector('a.brand'); if(b) b.removeAttribute('href');} resetState(); renderIntro(); }
+init();
+</script>
+</body>
+</html>

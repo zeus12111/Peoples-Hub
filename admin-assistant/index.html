@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Administrative Assistant Screening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E2540; --ink-soft:#4A5663; --ink-faint:#7A858F;
+    --surface:#F4F6FA; --card:#FFFFFF; --line:#E1E7EF; --line-soft:#EDF1F7;
+    --teal:#1273C7; --teal-deep:#0B4E8A; --teal-tint:#E6F1FB;
+    --amber:#B7791F; --red:#B23A3F; --red-tint:#F8E9E9;
+    --shadow:0 1px 2px rgba(24,34,46,.04), 0 8px 28px -12px rgba(24,34,46,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--surface);line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100%}
+  .wrap{flex:1;width:100%;max-width:660px;margin:0 auto;padding:28px 20px 64px;display:flex;flex-direction:column}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-.01em;font-size:1.05rem}
+  .brand .dot{width:11px;height:11px;border-radius:3px;background:var(--teal);box-shadow:0 0 0 4px var(--teal-tint)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:30px;animation:rise .35s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.card{animation:none}}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-deep)}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.6rem;letter-spacing:-.02em;line-height:1.14;margin:8px 0 0}
+  h2{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.18rem;letter-spacing:-.01em;margin-bottom:4px}
+  p.lead{color:var(--ink-soft);margin-top:12px}
+  .muted{color:var(--ink-faint);font-size:.85rem}
+  .preview{margin:22px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:18px 0}
+  .preview-title{font-size:.8rem;font-weight:600;color:var(--ink-soft);margin-bottom:10px}
+  .preview ul{list-style:none;display:grid;gap:9px}
+  .preview li{display:flex;gap:10px;font-size:.9rem;color:var(--ink-soft)}
+  .preview li::before{content:"";flex:0 0 6px;height:6px;margin-top:8px;border-radius:2px;background:var(--teal)}
+  label.field{display:block;margin-top:16px}
+  label.field span{display:block;font-size:.85rem;font-weight:500;color:var(--ink);margin-bottom:6px}
+  input[type=text],input[type=email],input[type=tel]{width:100%;font:inherit;font-size:.95rem;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);transition:border-color .15s, box-shadow .15s}
+  input:focus,textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-tint)}
+  .btn{font:inherit;font-weight:600;font-size:.95rem;border:none;border-radius:11px;padding:13px 20px;cursor:pointer;transition:transform .08s, background .15s;width:100%;margin-top:24px}
+  .btn-primary{background:var(--teal);color:#fff}
+  .btn-primary:hover{background:var(--teal-deep)}
+  .btn-primary:active{transform:translateY(1px)}
+  .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink);margin-top:10px}
+  .btn-ghost:hover{background:var(--line-soft)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn:focus-visible{outline:3px solid var(--teal-tint);outline-offset:2px}
+  .steps{display:flex;gap:6px;margin-bottom:20px}
+  .steps .seg{flex:1;height:5px;border-radius:3px;background:var(--line)}
+  .steps .seg.done{background:var(--teal)}
+  .steps .seg.active{background:var(--teal);opacity:.45}
+  .timer-wrap{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .timer-label{font-size:.8rem;color:var(--ink-faint)}
+  .timer-val{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.05rem;color:var(--ink)}
+  .timer-bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-bottom:24px}
+  .timer-fill{height:100%;width:100%;background:var(--teal);transition:width 1s linear, background .4s}
+  .qcount{font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--ink-faint);margin-bottom:6px}
+  .qtext{font-size:1.06rem;font-weight:500;line-height:1.4;margin-bottom:4px}
+  .options{display:grid;gap:10px;margin-top:18px}
+  .opt{display:flex;align-items:flex-start;gap:11px;border:1px solid var(--line);border-radius:11px;padding:13px 15px;cursor:pointer;font-size:.94rem;transition:border-color .12s, background .12s}
+  .opt:hover{border-color:var(--teal);background:var(--teal-tint)}
+  .opt input{margin-top:2px;accent-color:var(--teal);flex:0 0 auto}
+  .opt.sel{border-color:var(--teal);background:var(--teal-tint)}
+  .navrow{display:flex;gap:10px;margin-top:26px}
+  .navrow .btn{margin-top:0}
+  .navrow .btn-ghost{flex:0 0 auto;width:auto;padding:13px 18px}
+  .navrow .btn-primary{flex:1}
+  .done-mark{width:54px;height:54px;border-radius:50%;background:var(--teal-tint);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+  .done-mark svg{width:26px;height:26px;stroke:var(--teal-deep);stroke-width:2.4;fill:none}
+  .note{font-size:.78rem;color:var(--ink-faint);margin-top:18px;text-align:center}
+  /* typing */
+  .type-target{font-family:'IBM Plex Mono',monospace;font-size:.95rem;line-height:1.7;background:var(--line-soft);border-radius:11px;padding:16px;color:var(--ink-soft);margin:14px 0;user-select:none}
+  .type-target b{color:var(--teal-deep);background:var(--teal-tint);border-radius:2px}
+  .type-target .bad{color:#fff;background:var(--red);border-radius:2px}
+  textarea{width:100%;font-family:'IBM Plex Mono',monospace;font-size:.95rem;padding:13px;border:1px solid var(--line);border-radius:11px;min-height:120px;resize:vertical;color:var(--ink)}
+  .type-stats{display:flex;gap:10px;margin-top:14px}
+  .stat{flex:1;background:var(--line-soft);border-radius:11px;padding:12px 14px;text-align:center}
+  .stat .n{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.35rem}
+  .stat .l{font-size:.72rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.06em}
+  /* recording */
+  .rec-box{border:1px solid var(--line);border-radius:12px;padding:18px;margin-top:16px;text-align:center}
+  .rec-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--red);margin-right:8px;vertical-align:middle}
+  .rec-dot.pulse{animation:pulse 1s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .rec-time{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.2rem}
+  audio{width:100%;margin-top:14px}
+  .rec-btns{display:flex;gap:10px;margin-top:14px}
+  .rec-btns .btn{margin-top:0}
+  .warnbox{background:var(--amber);color:#fff;border-radius:10px;padding:11px 14px;font-size:.84rem;margin-top:14px}
+  .prompt{background:var(--teal-tint);border-left:3px solid var(--teal);border-radius:8px;padding:14px 16px;font-size:1rem;color:var(--ink);margin:14px 0;line-height:1.5}
+  .brand{text-decoration:none;color:var(--ink)}
+  .blogo{height:30px;width:auto;display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar"><a class="brand" href="../" title="Back to hub"><img class="blogo" src="../assets/compliance-ph.png" alt="Compliance PH Inc."><span id="brandName">Compliance PH Inc.</span></a></div>
+  <div id="app"></div>
+  <div class="note" id="footNote"></div>
+</div>
+
+<script src="/config.js"></script>
+<script>
+/* ============================================================
+   CONFIG  —  edit these, then save the file
+   ============================================================ */
+const CONFIG = {
+  companyName: "Compliance PH Inc.",
+  roleTitle: "Administrative Assistant",
+  mcTimeLimitSeconds: 480,        // 8 minutes for the multiple-choice section
+  numQuestions: 24,               // MC questions sampled from the BANK (bank has 40)
+  typingSeconds: 60,              // typing test duration
+  minWpm: 35,                     // below this raises a "low typing speed" flag
+  readAloudMaxSeconds: 40,        // max length of the read-aloud recording
+  speakMaxSeconds: 60,            // max length of the spoken-answer recording
+  apiEndpoint: (window.PH_CONFIG&&window.PH_CONFIG.apiUrl)||"",
+  submitToken: "ph-hub-submit-key",   // must match SUBMIT_TOKEN in the People Hub API script
+
+  strongThreshold: 80,            // % on the MC section to label "Interview"
+  reviewThreshold: 65,            // % for "Review"; below = "Below bar"
+
+  jobPreview: [
+    "Supporting an Australian manager during Australian business hours (early start)",
+    "Confident spoken and written English \u2014 you\u2019ll speak with the boss directly",
+    "Everyday tools: MS Office, Google Workspace, and AI tools like ChatGPT",
+    "Fast, accurate typing and staying organised under time pressure"
+  ],
+
+  typingText: "Good morning. Please find attached the updated schedule for this week. I have confirmed the Thursday meeting at ten and moved the budget review to Friday afternoon. Let me know if you would like any changes and I will send the final agenda before the end of the day.",
+
+  readAloudText: "Good morning, and thank you for the update. I have reviewed the schedule and confirmed the meeting for Thursday at ten a.m. I will send the agenda and the supporting documents before the end of the day. Please let me know if you would like any changes.",
+
+  speakPrompt: "In your own words, tell us a little about yourself, and describe a time you had to manage several tasks at once. Please speak for about 45 to 60 seconds."
+};
+
+/* ============================================================
+   MULTIPLE-CHOICE BANK  (correct option marked c:true)
+   types: tools | grammar | pressure
+   ============================================================ */
+const BANK = [
+  /* ---- Tool knowledge: AI / ChatGPT ---- */
+  {type:'tools', q:'In ChatGPT, the instruction you type to ask for something is called a:', o:[{t:'Prompt',c:true},{t:'Macro'},{t:'Formula'},{t:'Cell'}]},
+  {type:'tools', q:'Which is the BEST way to get a useful result from ChatGPT?', o:[{t:'Give clear, specific instructions with context and the format you want',c:true},{t:'Type one vague word'},{t:'Use ALL CAPS'},{t:'Ask the exact same thing many times'}]},
+  {type:'tools', q:'Which should you NOT paste into a public AI tool like ChatGPT?', o:[{t:'Confidential data such as passwords or private client details',c:true},{t:'A rough email you want reworded'},{t:'A public news article'},{t:'A list of words to find synonyms for'}]},
+  {type:'tools', q:'ChatGPT can sometimes sound confident but be wrong. The safe habit is to:', o:[{t:'Verify important facts before relying on them',c:true},{t:'Always trust it completely'},{t:'Never use it for anything'},{t:'Copy its answers without reading them'}]},
+  /* ---- Tool knowledge: Microsoft Office ---- */
+  {type:'tools', q:'In Microsoft Word, which shortcut saves the document?', o:[{t:'Ctrl + S',c:true},{t:'Ctrl + P'},{t:'Ctrl + Z'},{t:'Ctrl + V'}]},
+  {type:'tools', q:'In Microsoft Excel, a formula always begins with:', o:[{t:'An equals sign ( = )',c:true},{t:'A plus sign ( + )'},{t:'An at sign ( @ )'},{t:'A colon ( : )'}]},
+  {type:'tools', q:'In Excel, which function adds up a range of numbers?', o:[{t:'SUM',c:true},{t:'COUNT'},{t:'LEN'},{t:'NOW'}]},
+  {type:'tools', q:'In Excel, to keep the top row visible while you scroll, you use:', o:[{t:'Freeze Panes',c:true},{t:'Merge Cells'},{t:'Wrap Text'},{t:'Conditional Formatting'}]},
+  {type:'tools', q:'In email, to send a copy to someone WITHOUT the other recipients seeing their address, you use:', o:[{t:'BCC',c:true},{t:'CC'},{t:'Reply All'},{t:'Forward'}]},
+  {type:'tools', q:'In Microsoft Word, \u201cTrack Changes\u201d is used to:', o:[{t:'Record edits so others can review them',c:true},{t:'Change the font automatically'},{t:'Count the words'},{t:'Back up the file online'}]},
+  {type:'tools', q:'Which Microsoft app is best for building a slide presentation?', o:[{t:'PowerPoint',c:true},{t:'Excel'},{t:'Outlook'},{t:'OneNote'}]},
+  /* ---- Tool knowledge: Google Workspace ---- */
+  {type:'tools', q:'In Google Sheets, =SUM(A1:A10) will:', o:[{t:'Add the values in cells A1 through A10',c:true},{t:'Count how many cells there are'},{t:'Average the values'},{t:'Delete the values'}]},
+  {type:'tools', q:'In Google Sheets, a common function to look up a value in a table is:', o:[{t:'VLOOKUP',c:true},{t:'PRINT'},{t:'MERGE'},{t:'SORTA'}]},
+  {type:'tools', q:'In Google Sheets, you freeze a row (so it stays visible) from which menu?', o:[{t:'View \u2192 Freeze',c:true},{t:'Insert \u2192 Freeze'},{t:'Format \u2192 Freeze'},{t:'File \u2192 Freeze'}]},
+  {type:'tools', q:'In Google Workspace, which tool schedules a meeting and sends invites?', o:[{t:'Google Calendar',c:true},{t:'Google Docs'},{t:'Google Keep'},{t:'Google Forms'}]},
+  {type:'tools', q:'To let only specific people edit a Google Doc, you:', o:[{t:'Use Share and add their emails with \u201cEditor\u201d access',c:true},{t:'Publish it to the whole web'},{t:'Download and email it to everyone'},{t:'Make it public to anyone with the link'}]},
+  {type:'tools', q:'In Google Sheets, to sort a column A\u2013Z you use:', o:[{t:'The Data menu \u2192 Sort',c:true},{t:'Insert \u2192 Sort'},{t:'Format \u2192 Sort'},{t:'File \u2192 Sort'}]},
+  {type:'tools', q:'The safest way to give a coworker a file in Google Drive is to:', o:[{t:'Share it with their specific email and the right permission',c:true},{t:'Post the link publicly'},{t:'Email them the account password'},{t:'Make it editable by anyone with the link'}]},
+  /* ---- Tool knowledge: general admin tech ---- */
+  {type:'tools', q:'A calendar \u201cdouble-booking\u201d means:', o:[{t:'Two events are scheduled at the same time',c:true},{t:'An event repeats weekly'},{t:'An event was cancelled'},{t:'A reminder was set twice'}]},
+  {type:'tools', q:'To quickly find a specific word in a long document, you press:', o:[{t:'Ctrl + F',c:true},{t:'Ctrl + B'},{t:'Ctrl + D'},{t:'Ctrl + G'}]},
+  {type:'tools', q:'Which file format keeps a document looking the same on any device and is not easily edited?', o:[{t:'PDF',c:true},{t:'.txt'},{t:'.csv'},{t:'.rtf'}]},
+  {type:'tools', q:'\u201cCC\u201d on an email means:', o:[{t:'Carbon copy \u2014 recipients can see everyone copied',c:true},{t:'A hidden copy no one can see'},{t:'A cancelled copy'},{t:'A compressed file'}]},
+
+  /* ---- Written English & grammar ---- */
+  {type:'grammar', q:'Choose the correct sentence.', o:[{t:'I have attached the file you requested.',c:true},{t:'I have attach the file you requested.'},{t:'I attaching the file you requested.'},{t:'I has attached the file you requested.'}]},
+  {type:'grammar', q:'Choose the correct word: \u201cPlease let me know if you have any ___.\u201d', o:[{t:'questions',c:true},{t:'question\u2019s'},{t:'questions\u2019'},{t:'quesions'}]},
+  {type:'grammar', q:'Fill in: \u201cThe meeting has been moved ___ 3 PM.\u201d', o:[{t:'to',c:true},{t:'on'},{t:'in'},{t:'by'}]},
+  {type:'grammar', q:'Which sentence is grammatically correct?', o:[{t:'There are several emails in your inbox.',c:true},{t:'There is several emails in your inbox.'},{t:'There are several email in your inbox.'},{t:'They\u2019re several emails in your inbox.'}]},
+  {type:'grammar', q:'Choose the correct spelling.', o:[{t:'calendar',c:true},{t:'calender'},{t:'calandar'},{t:'calendr'}]},
+  {type:'grammar', q:'Choose the correct spelling.', o:[{t:'schedule',c:true},{t:'schedual'},{t:'scheduele'},{t:'skedule'}]},
+  {type:'grammar', q:'Choose the best rewrite of: \u201ci cant make it to the meeting can we move it\u201d', o:[{t:'I can\u2019t make it to the meeting. Could we move it, please?',c:true},{t:'i cant make it to the meeting can we move it'},{t:'I cant make it, move it.'},{t:'cant make meeting move please'}]},
+  {type:'grammar', q:'Choose the correct word: \u201c___ welcome to join the call.\u201d', o:[{t:'You\u2019re',c:true},{t:'Your'},{t:'Youre'},{t:'Yours'}]},
+  {type:'grammar', q:'Choose the correct word: \u201cThe report is due ___ Monday.\u201d', o:[{t:'on',c:true},{t:'in'},{t:'at'},{t:'to'}]},
+  {type:'grammar', q:'Which is the most professional email opening to a manager?', o:[{t:'Hi Sarah, I hope you\u2019re doing well.',c:true},{t:'Yo, what\u2019s up'},{t:'Hey!!!'},{t:'Oi boss'}]},
+
+  /* ---- Work judgment under pressure ---- */
+  {type:'pressure', q:'Your boss sends three \u201curgent\u201d requests at the same time. The best approach is:', o:[{t:'Quickly judge (or confirm) which is most time-critical and work through them in order',c:true},{t:'Do them in random order'},{t:'Only do the easiest one'},{t:'Freeze and do none'}]},
+  {type:'pressure', q:'You\u2019re mid-task when your boss calls with a new urgent request. You should:', o:[{t:'Note where you are, handle the urgent request, then return to the task',c:true},{t:'Ignore the boss until you finish'},{t:'Drop everything without noting your place'},{t:'Tell the boss you\u2019re too busy'}]},
+  {type:'pressure', q:'You realise you made a mistake in a document you already sent. You should:', o:[{t:'Tell your boss promptly, correct it, and resend',c:true},{t:'Hope nobody notices'},{t:'Blame a coworker'},{t:'Quietly delete the email'}]},
+  {type:'pressure', q:'You don\u2019t know how to do a task your boss assigned. The best response is:', o:[{t:'Try to find out, and if still stuck, ask a clear, specific question',c:true},{t:'Guess and hope it\u2019s right'},{t:'Ignore it'},{t:'Say you finished it'}]},
+  {type:'pressure', q:'You spot that two meetings are double-booked for your boss. You should:', o:[{t:'Flag it immediately and propose a way to reschedule',c:true},{t:'Cancel one silently'},{t:'Do nothing'},{t:'Let the boss discover it later'}]},
+  {type:'pressure', q:'Your boss is in Australia and needs a reply first thing their morning. To be reliable you should:', o:[{t:'Know the deadline in their time zone and deliver before it',c:true},{t:'Reply whenever suits you'},{t:'Assume they will wait'},{t:'Guess the time difference'}]},
+  {type:'pressure', q:'Under time pressure with several tasks, the most effective first step is:', o:[{t:'List and prioritise the tasks by urgency and importance',c:true},{t:'Start with whatever is nearest'},{t:'Try to do everything at once'},{t:'Wait until someone tells you what to do'}]},
+  {type:'pressure', q:'Your boss says your report had errors. The most professional response is:', o:[{t:'Thank them, fix the errors, and add a check to avoid repeating them',c:true},{t:'Get defensive'},{t:'Argue that it was fine'},{t:'Take it personally and go quiet'}]}
+];
+
+/* ============================================================
+   FIT / BACKGROUND  (flagged, not scored right/wrong)
+   ============================================================ */
+const FIT = [
+  {id:'nightshift', q:'This role supports an Australian manager during Australian business hours, so the day starts early (often around 6\u20137 AM). Can you reliably start that early, every shift?', o:['Yes','No','Depends on the details'], flagIf:{'No':'hard'}},
+  {id:'attendance', q:'Can you reliably commit to your assigned schedule and be on time every day?', o:['Yes, always','Most of the time','No'], flagIf:{'No':'hard','Most of the time':'soft'}},
+  {id:'internet', q:'You\u2019ll be working from home. Do you have stable internet, a quiet space, and a backup for power or internet during brownouts?', o:['Yes, all three','Internet only, no backup','No'], flagIf:{'No':'hard','Internet only, no backup':'soft'}},
+  {id:'spoken', q:'How would you rate your spoken English?', o:['Basic','Conversational','Fluent','Native-like'], flagIf:{}},
+  {id:'tools', q:'How much experience do you have with office tools (MS Office, Google Workspace, AI tools)?', o:['A lot \u2013 I use them daily','Some','A little','None yet'], flagIf:{'None yet':'soft'}},
+  {id:'pressure', q:'This role can be fast-paced with competing deadlines. How comfortable are you working under pressure?', o:['Very comfortable','Comfortable','Somewhat','Not comfortable'], flagIf:{'Not comfortable':'soft'}}
+];
+
+/* ============================================================
+   Submit everything (incl. recordings) to the Sheet endpoint
+   ============================================================ */
+async function saveSubmission(rec){
+  if(!CONFIG.apiEndpoint){ console.warn('No sheetEndpoint set \u2014 submission not saved.'); return; }
+  try{
+    await fetch(CONFIG.apiEndpoint, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(rec)});
+  }catch(e){ console.error('Submission failed:', e); }
+}
+
+/* ============================================================
+   App
+   ============================================================ */
+const app = document.getElementById('app');
+document.getElementById('brandName').textContent = CONFIG.companyName;
+document.getElementById('footNote').textContent = CONFIG.apiEndpoint
+  ? 'Your answers and recordings are sent securely to our hiring team.'
+  : 'Setup note: paste your Google Sheet URL into CONFIG.apiEndpoint before going live.';
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+const STAGES=4; // fit, mc, typing, speaking
+function segs(active){let h='';for(let i=0;i<STAGES;i++)h+=`<div class="seg ${i<active?'done':i===active?'active':''}"></div>`;return h;}
+
+let state = {};
+function resetState(){
+  const sampled = shuffle(BANK).slice(0, Math.min(CONFIG.numQuestions, BANK.length)).map(q => ({...q, o: shuffle(q.o)}));
+  state = {candidate:{name:'',email:'',phone:''}, fit:{}, fitIdx:0, questions:sampled, qIdx:0, answers:{},
+    timeLeft:CONFIG.mcTimeLimitSeconds, timer:null, startedAt:null,
+    results:{}, typing:{}, audio:{readaloud:'',speak:''}, speakIdx:0};
+}
+
+/* ---------- Intro ---------- */
+function renderIntro(){
+  app.innerHTML = `
+  <div class="card">
+    <div class="eyebrow">Now hiring</div>
+    <h1>${esc(CONFIG.roleTitle)}</h1>
+    <p class="lead">This assessment has four short parts: quick questions, a tools &amp; English test, a typing-speed test, and two brief voice recordings. It takes about 15\u201320 minutes. You\u2019ll need a working microphone for the speaking part.</p>
+    <div class="preview"><div class="preview-title">What this role really involves</div><ul>${CONFIG.jobPreview.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+    <label class="field"><span>Full name</span><input id="c_name" type="text" autocomplete="name" placeholder="Juan Dela Cruz"></label>
+    <label class="field"><span>Email</span><input id="c_email" type="email" autocomplete="email" placeholder="you@email.com"></label>
+    <label class="field"><span>Mobile number</span><input id="c_phone" type="tel" autocomplete="tel" placeholder="09xx xxx xxxx"></label>
+    <button class="btn btn-primary" id="startBtn" disabled>Start assessment</button>
+  </div>`;
+  const n=document.getElementById('c_name'),e=document.getElementById('c_email'),p=document.getElementById('c_phone'),b=document.getElementById('startBtn');
+  const chk=()=>{b.disabled=!(n.value.trim()&&e.value.trim()&&p.value.trim());};
+  [n,e,p].forEach(el=>el.addEventListener('input',chk));
+  b.addEventListener('click',()=>{state.candidate={name:n.value.trim(),email:e.value.trim(),phone:p.value.trim()};renderFit();});
+}
+
+/* ---------- Fit ---------- */
+function renderFit(){
+  const i=state.fitIdx, item=FIT[i];
+  app.innerHTML = `
+  <div class="card">
+    <div class="steps">${segs(0)}</div>
+    <div class="qcount">About you \u00b7 ${i+1} of ${FIT.length}</div>
+    <div class="qtext">${esc(item.q)}</div>
+    <div class="options" id="opts">${item.o.map(t=>`<label class="opt"><input type="radio" name="fit" value="${esc(t)}"><span>${esc(t)}</span></label>`).join('')}</div>
+    <div class="navrow">${i>0?'<button class="btn btn-ghost" id="back">Back</button>':''}<button class="btn btn-primary" id="next" disabled>${i===FIT.length-1?'Continue to test':'Next'}</button></div>
+  </div>`;
+  wireOptions(()=>{document.getElementById('next').disabled=false;});
+  const pre=state.fit[item.id];
+  if(pre!==undefined){const lbl=[...document.querySelectorAll('#opts .opt')].find(l=>l.querySelector('input').value===pre);if(lbl){lbl.classList.add('sel');lbl.querySelector('input').checked=true;document.getElementById('next').disabled=false;}}
+  document.getElementById('next').addEventListener('click',()=>{state.fit[item.id]=document.querySelector('input[name=fit]:checked').value;if(i===FIT.length-1){startTest();}else{state.fitIdx++;renderFit();}});
+  const back=document.getElementById('back'); if(back) back.addEventListener('click',()=>{state.fitIdx--;renderFit();});
+}
+
+/* ---------- MC test ---------- */
+function startTest(){
+  state.startedAt=Date.now(); state.timeLeft=CONFIG.mcTimeLimitSeconds; state.qIdx=0;
+  if(state.timer) clearInterval(state.timer);
+  state.timer=setInterval(()=>{state.timeLeft--;updateTimer();if(state.timeLeft<=0){clearInterval(state.timer);finishTest(true);}},1000);
+  renderQuestion();
+}
+function updateTimer(){
+  const t=document.getElementById('timerVal'),f=document.getElementById('timerFill'); if(!t||!f) return;
+  const m=Math.floor(state.timeLeft/60),s=state.timeLeft%60; t.textContent=`${m}:${String(s).padStart(2,'0')}`;
+  const pct=Math.max(0,state.timeLeft/CONFIG.mcTimeLimitSeconds*100); f.style.width=pct+'%';
+  f.style.background=pct<15?'var(--red)':pct<35?'var(--amber)':'var(--teal)';
+}
+function renderQuestion(){
+  const i=state.qIdx,q=state.questions[i],m=Math.floor(state.timeLeft/60),s=state.timeLeft%60;
+  app.innerHTML = `
+  <div class="card">
+    <div class="steps">${segs(1)}</div>
+    <div class="timer-wrap"><span class="timer-label">Time remaining</span><span class="timer-val" id="timerVal">${m}:${String(s).padStart(2,'0')}</span></div>
+    <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
+    <div class="qcount">Question ${i+1} of ${state.questions.length}</div>
+    <div class="qtext">${esc(q.q)}</div>
+    <div class="options" id="opts">${q.o.map((opt,k)=>`<label class="opt" data-k="${k}"><input type="radio" name="q" value="${k}"><span>${esc(opt.t)}</span></label>`).join('')}</div>
+    <div class="navrow"><button class="btn btn-primary" id="next" disabled>${i===state.questions.length-1?'Finish test':'Next'}</button></div>
+  </div>`;
+  updateTimer(); wireOptions(()=>{document.getElementById('next').disabled=false;});
+  const pre=state.answers[i];
+  if(pre!==undefined){const lbl=document.querySelector(`#opts .opt[data-k="${pre}"]`);if(lbl){lbl.classList.add('sel');lbl.querySelector('input').checked=true;document.getElementById('next').disabled=false;}}
+  document.getElementById('next').addEventListener('click',()=>{
+    state.answers[i]=parseInt(document.querySelector('input[name=q]:checked').value,10);
+    if(i===state.questions.length-1){clearInterval(state.timer);finishTest(false);}else{state.qIdx++;renderQuestion();}
+  });
+}
+function finishTest(timedOut){
+  let correct=0; const byType={};
+  state.questions.forEach((q,i)=>{
+    if(!byType[q.type]) byType[q.type]=[0,0];
+    const a=state.answers[i]; const ok=a!==undefined&&q.o[a]&&q.o[a].c===true;
+    byType[q.type][1]++; if(ok){correct++;byType[q.type][0]++;}
+  });
+  const total=state.questions.length, pct=Math.round(correct/total*100);
+  state.results={correct,total,pct,timedOut,
+    byType:Object.fromEntries(Object.entries(byType).map(([k,v])=>[k,v[1]?Math.round(v[0]/v[1]*100):''])),
+    durationSec:state.startedAt?Math.round((Date.now()-state.startedAt)/1000):''};
+  startTyping();
+}
+
+/* ---------- Typing test ---------- */
+function startTyping(){
+  const target=CONFIG.typingText;
+  app.innerHTML = `
+  <div class="card">
+    <div class="steps">${segs(2)}</div>
+    <div class="eyebrow">Typing test</div>
+    <h2 style="margin-top:8px">Type the text below</h2>
+    <p class="lead" style="margin-top:6px">You have ${CONFIG.typingSeconds} seconds. The timer starts when you begin typing. Pasting is disabled.</p>
+    <div class="type-target" id="tgt"></div>
+    <textarea id="ta" placeholder="Start typing here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    <div class="type-stats">
+      <div class="stat"><div class="n" id="wpm">0</div><div class="l">WPM</div></div>
+      <div class="stat"><div class="n" id="acc">100%</div><div class="l">Accuracy</div></div>
+      <div class="stat"><div class="n" id="tleft">${CONFIG.typingSeconds}</div><div class="l">Seconds left</div></div>
+    </div>
+    <button class="btn btn-primary" id="tnext" disabled>Finish typing test</button>
+  </div>`;
+  const ta=document.getElementById('ta'), tgt=document.getElementById('tgt');
+  let started=false, tInt=null, left=CONFIG.typingSeconds, done=false;
+  const paint=()=>{
+    const typed=ta.value; let html='';
+    for(let i=0;i<target.length;i++){
+      const ch=esc(target[i]);
+      if(i<typed.length){ html+= (typed[i]===target[i]) ? `<b>${ch}</b>` : `<span class="bad">${ch}</span>`; }
+      else html+=ch;
+    }
+    tgt.innerHTML=html;
+  };
+  const stats=()=>{
+    const typed=ta.value; let corr=0;
+    for(let i=0;i<typed.length;i++){ if(typed[i]===target[i]) corr++; }
+    const elapsed=(CONFIG.typingSeconds-left)||0.0001;
+    const wpm=Math.max(0,Math.round((corr/5)/(elapsed/60)));
+    const acc=typed.length?Math.round(corr/typed.length*100):100;
+    document.getElementById('wpm').textContent=wpm;
+    document.getElementById('acc').textContent=acc+'%';
+    return {wpm,acc,corr,typedLen:typed.length};
+  };
+  const finish=()=>{
+    if(done) return; done=true; if(tInt) clearInterval(tInt); ta.disabled=true;
+    const s=stats(); state.typing={wpm:s.wpm,accuracy:s.acc,typed:s.typedLen,target:target.length};
+    startSpeakingIntro();
+  };
+  paint();
+  ta.addEventListener('paste',e=>e.preventDefault());
+  ta.addEventListener('input',()=>{
+    if(!started){started=true; tInt=setInterval(()=>{left--; document.getElementById('tleft').textContent=Math.max(0,left); if(left<=0) finish();},1000);}
+    paint(); stats();
+    document.getElementById('tnext').disabled=false;
+    if(ta.value.length>=target.length) finish();
+  });
+  document.getElementById('tnext').addEventListener('click',finish);
+}
+
+/* ---------- Speaking ---------- */
+function startSpeakingIntro(){
+  app.innerHTML = `
+  <div class="card">
+    <div class="steps">${segs(3)}</div>
+    <div class="eyebrow">Spoken English</div>
+    <h2 style="margin-top:8px">Two quick voice recordings</h2>
+    <p class="lead">Because you\u2019ll speak with the manager directly, we\u2019d like to hear your spoken English. There are two short recordings. Please allow microphone access when your browser asks. Find a quiet spot and speak clearly and naturally.</p>
+    <p class="muted" style="margin-top:14px">These recordings are reviewed by the hiring team only.</p>
+    <button class="btn btn-primary" id="sgo">Begin recording tasks</button>
+  </div>`;
+  document.getElementById('sgo').addEventListener('click',()=>renderRecord(0));
+}
+const SPEAK_TASKS=[
+  {key:'readaloud', title:'Task 1 of 2 \u2014 Read aloud', instruction:'Please read the text below aloud, clearly and at a natural pace.', showText:true, max:()=>CONFIG.readAloudMaxSeconds},
+  {key:'speak', title:'Task 2 of 2 \u2014 Speak', instruction:CONFIG.speakPrompt, showText:false, max:()=>CONFIG.speakMaxSeconds}
+];
+function renderRecord(idx){
+  const task=SPEAK_TASKS[idx];
+  app.innerHTML = `
+  <div class="card">
+    <div class="steps">${segs(3)}</div>
+    <div class="eyebrow">${esc(task.title)}</div>
+    <p class="lead" style="margin-top:8px">${esc(task.instruction)}</p>
+    ${task.showText?`<div class="prompt">${esc(CONFIG.readAloudText)}</div>`:''}
+    <div class="rec-box" id="recbox">
+      <div><span class="rec-dot" id="dot" style="visibility:hidden"></span><span class="rec-time" id="rtime">0:00</span></div>
+      <div class="muted" id="rhint" style="margin-top:6px">Up to ${task.max()} seconds</div>
+      <audio id="player" controls style="display:none"></audio>
+      <div class="rec-btns" id="rbtns">
+        <button class="btn btn-primary" id="recBtn">Start recording</button>
+      </div>
+    </div>
+    <div class="navrow"><button class="btn btn-ghost" id="skip">Skip this recording</button><button class="btn btn-primary" id="rnext" disabled>${idx===SPEAK_TASKS.length-1?'Finish & submit':'Next task'}</button></div>
+  </div>`;
+  let mediaRec=null, chunks=[], stream=null, rInt=null, secs=0, recording=false;
+  const dot=document.getElementById('dot'), rtime=document.getElementById('rtime'),
+        player=document.getElementById('player'), recBtn=document.getElementById('recBtn'),
+        rnext=document.getElementById('rnext'), rhint=document.getElementById('rhint');
+  const fmt=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  const stopStream=()=>{ if(stream){stream.getTracks().forEach(t=>t.stop()); stream=null;} };
+  const stopRec=()=>{
+    if(!recording) return; recording=false; if(rInt) clearInterval(rInt);
+    dot.classList.remove('pulse'); dot.style.visibility='hidden';
+    try{ mediaRec.stop(); }catch(e){}
+  };
+  recBtn.addEventListener('click', async ()=>{
+    if(recording){ stopRec(); return; }
+    try{
+      stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    }catch(err){
+      document.getElementById('recbox').insertAdjacentHTML('beforeend','<div class="warnbox">We couldn\u2019t access your microphone. Please allow mic access in your browser, or use the Skip button and we\u2019ll assess your spoken English another way.</div>');
+      return;
+    }
+    chunks=[]; mediaRec=new MediaRecorder(stream);
+    mediaRec.ondataavailable=e=>{ if(e.data.size>0) chunks.push(e.data); };
+    mediaRec.onstop=async ()=>{
+      stopStream();
+      const blob=new Blob(chunks,{type:(chunks[0]&&chunks[0].type)||'audio/webm'});
+      const url=URL.createObjectURL(blob); player.src=url; player.style.display='block';
+      const b64=await blobToB64(blob); state.audio[task.key]=b64;
+      recBtn.textContent='Re-record'; rnext.disabled=false; rhint.textContent='Recording saved. You can play it back, re-record, or continue.';
+    };
+    mediaRec.start(); recording=true; secs=0; rtime.textContent='0:00';
+    dot.style.visibility='visible'; dot.classList.add('pulse'); recBtn.textContent='Stop recording'; player.style.display='none';
+    rInt=setInterval(()=>{ secs++; rtime.textContent=fmt(secs); if(secs>=task.max()) stopRec(); },1000);
+  });
+  document.getElementById('skip').addEventListener('click',()=>{ stopRec(); stopStream(); state.audio[task.key]=''; advance(idx); });
+  rnext.addEventListener('click',()=>{ stopRec(); stopStream(); advance(idx); });
+}
+function advance(idx){ if(idx===SPEAK_TASKS.length-1) submitAll(); else renderRecord(idx+1); }
+function blobToB64(blob){return new Promise(res=>{const fr=new FileReader();fr.onloadend=()=>res(String(fr.result).split(',')[1]||'');fr.readAsDataURL(blob);});}
+
+/* ---------- Submit ---------- */
+function submitAll(){
+  const r=state.results;
+  const flags=[];
+  FIT.forEach(f=>{const v=state.fit[f.id];const lvl=f.flagIf[v];if(lvl) flags.push({level:lvl,text:flagText(f.id,v)});});
+  if(state.typing && state.typing.wpm<CONFIG.minWpm) flags.push({level:'soft',text:'Low typing speed ('+state.typing.wpm+' WPM)'});
+  let band='below'; if(r.pct>=CONFIG.strongThreshold) band='strong'; else if(r.pct>=CONFIG.reviewThreshold) band='review';
+  if(band==='strong'&&flags.some(f=>f.level==='hard')) band='review';
+  const recLabel={strong:'Interview',review:'Review',below:'Below bar'}[band];
+  const rec={
+    token:CONFIG.submitToken, exam:'admin', role:CONFIG.roleTitle,
+    name:state.candidate.name,email:state.candidate.email,phone:state.candidate.phone,
+    score:r.pct,correct:r.correct,total:r.total,band,recommendation:recLabel,timedOut:r.timedOut,
+    byType:r.byType, durationSec:r.durationSec,
+    typing:state.typing, answers:buildDetail(), fit:state.fit, flags,
+    audio:state.audio
+  };
+  renderSubmitting();
+  saveSubmission(rec).then(renderDone).catch(renderDone);
+}
+function renderSubmitting(){
+  app.innerHTML = `<div class="card" style="text-align:center"><h2>Submitting\u2026</h2><p class="lead">Uploading your answers and recordings. This can take a few seconds \u2014 please don\u2019t close the window.</p></div>`;
+}
+function flagText(id,v){
+  const map={
+    nightshift:'Cannot start early for AU hours',
+    attendance:v==='No'?'Cannot commit to schedule':'Inconsistent attendance',
+    internet:v==='No'?'No reliable WFH setup':'No power/internet backup',
+    pressure:'Not comfortable under pressure'
+  };
+  return map[id]||(id+': '+v);
+}
+function renderDone(){
+  app.innerHTML = `
+  <div class="card" style="text-align:center">
+    <div class="done-mark"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+    <h2>Thanks, ${esc(state.candidate.name.split(' ')[0]||'there')} \u2014 you\u2019re all set</h2>
+    <p class="lead" style="margin-top:8px">Your assessment and recordings have been submitted to our hiring team. If you\u2019re a match for the ${esc(CONFIG.roleTitle)} role, we\u2019ll reach out by email or phone.</p>
+    <p class="muted" style="margin-top:18px">${KIOSK?'Please hand the computer back to our staff.':'You can close this window now.'}</p>
+  </div>`;
+  kioskReturn();
+}
+
+
+/* Builds the per-question answer sheet sent with the submission */
+function buildDetail(){
+  return state.questions.map(function(q,i){
+    var a=state.answers[i];
+    var chosen=(a!==undefined && q.o[a]) ? q.o[a].t : '';
+    var corrOpt=q.o.filter(function(o){return o.c===true;})[0];
+    var corr=corrOpt?corrOpt.t:'';
+    return {n:i+1, type:q.type, q:q.q, passage:q.passage||'', chosen:chosen, correct:corr,
+            ok:(chosen!=='' && chosen===corr)};
+  });
+}
+
+/* Kiosk mode: when opened from the station, hand back automatically for the next applicant */
+var KIOSK = new URLSearchParams(location.search).get('kiosk')==='1';
+function kioskReturn(){ if(KIOSK) setTimeout(function(){ location.href='../kiosk/'; }, 8000); }
+function wireOptions(onPick){
+  document.querySelectorAll('#opts .opt').forEach(lbl=>{
+    lbl.addEventListener('click',()=>{document.querySelectorAll('#opts .opt').forEach(x=>x.classList.remove('sel'));lbl.classList.add('sel');lbl.querySelector('input').checked=true;onPick();});
+  });
+}
+
+function init(){ if(KIOSK){var b=document.querySelector('a.brand'); if(b) b.removeAttribute('href');} resetState(); renderIntro(); }
+init();
+</script>
+</body>
+</html>

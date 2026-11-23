@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>QA Specialist Screening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E2540; --ink-soft:#4A5663; --ink-faint:#7A858F;
+    --surface:#F4F6FA; --card:#FFFFFF; --line:#E1E7EF; --line-soft:#EDF1F7;
+    --teal:#1273C7; --teal-deep:#0B4E8A; --teal-tint:#E6F1FB;
+    --amber:#B7791F; --red:#B23A3F; --red-tint:#F8E9E9;
+    --shadow:0 1px 2px rgba(24,34,46,.04), 0 8px 28px -12px rgba(24,34,46,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--surface);line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100%}
+  .wrap{flex:1;width:100%;max-width:660px;margin:0 auto;padding:28px 20px 64px;display:flex;flex-direction:column}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-.01em;font-size:1.05rem}
+  .brand .dot{width:11px;height:11px;border-radius:3px;background:var(--teal);box-shadow:0 0 0 4px var(--teal-tint)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:30px;animation:rise .35s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.card{animation:none}}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-deep)}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.72rem;letter-spacing:-.02em;line-height:1.12;margin:8px 0 0}
+  h2{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.18rem;letter-spacing:-.01em;margin-bottom:4px}
+  p.lead{color:var(--ink-soft);margin-top:12px}
+  .muted{color:var(--ink-faint);font-size:.85rem}
+  .preview{margin:22px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:18px 0}
+  .preview-title{font-size:.8rem;font-weight:600;color:var(--ink-soft);margin-bottom:10px}
+  .preview ul{list-style:none;display:grid;gap:9px}
+  .preview li{display:flex;gap:10px;font-size:.9rem;color:var(--ink-soft)}
+  .preview li::before{content:"";flex:0 0 6px;height:6px;margin-top:8px;border-radius:2px;background:var(--teal)}
+  label.field{display:block;margin-top:16px}
+  label.field span{display:block;font-size:.85rem;font-weight:500;color:var(--ink);margin-bottom:6px}
+  input[type=text],input[type=email],input[type=tel]{width:100%;font:inherit;font-size:.95rem;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);transition:border-color .15s, box-shadow .15s}
+  input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-tint)}
+  .btn{font:inherit;font-weight:600;font-size:.95rem;border:none;border-radius:11px;padding:13px 20px;cursor:pointer;transition:transform .08s, background .15s;width:100%;margin-top:24px}
+  .btn-primary{background:var(--teal);color:#fff}
+  .btn-primary:hover{background:var(--teal-deep)}
+  .btn-primary:active{transform:translateY(1px)}
+  .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink);margin-top:10px}
+  .btn-ghost:hover{background:var(--line-soft)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn:focus-visible{outline:3px solid var(--teal-tint);outline-offset:2px}
+  .steps{display:flex;gap:6px;margin-bottom:20px}
+  .steps .seg{flex:1;height:5px;border-radius:3px;background:var(--line)}
+  .steps .seg.done{background:var(--teal)}
+  .steps .seg.active{background:var(--teal);opacity:.45}
+  .timer-wrap{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .timer-label{font-size:.8rem;color:var(--ink-faint)}
+  .timer-val{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.05rem;color:var(--ink)}
+  .timer-bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-bottom:24px}
+  .timer-fill{height:100%;width:100%;background:var(--teal);transition:width 1s linear, background .4s}
+  .qcount{font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--ink-faint);margin-bottom:6px}
+  .qtext{font-size:1.06rem;font-weight:500;line-height:1.4;margin-bottom:4px}
+  .passage{background:var(--line-soft);border-radius:11px;padding:14px 16px;font-size:.92rem;color:var(--ink-soft);margin:14px 0;white-space:pre-line}
+  .options{display:grid;gap:10px;margin-top:18px}
+  .opt{display:flex;align-items:flex-start;gap:11px;border:1px solid var(--line);border-radius:11px;padding:13px 15px;cursor:pointer;font-size:.94rem;transition:border-color .12s, background .12s}
+  .opt:hover{border-color:var(--teal);background:var(--teal-tint)}
+  .opt input{margin-top:2px;accent-color:var(--teal);flex:0 0 auto}
+  .opt.sel{border-color:var(--teal);background:var(--teal-tint)}
+  .navrow{display:flex;gap:10px;margin-top:26px}
+  .navrow .btn{margin-top:0}
+  .navrow .btn-ghost{flex:0 0 auto;width:auto;padding:13px 18px}
+  .navrow .btn-primary{flex:1}
+  .done-mark{width:54px;height:54px;border-radius:50%;background:var(--teal-tint);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+  .done-mark svg{width:26px;height:26px;stroke:var(--teal-deep);stroke-width:2.4;fill:none}
+  .note{font-size:.78rem;color:var(--ink-faint);margin-top:18px;text-align:center}
+  .brand{text-decoration:none;color:var(--ink)}
+  .blogo{height:30px;width:auto;display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar"><a class="brand" href="../" title="Back to hub"><img class="blogo" src="../assets/compliance-ph.png" alt="Compliance PH Inc."><span id="brandName">Compliance PH Inc.</span></a></div>
+  <div id="app"></div>
+  <div class="note" id="footNote"></div>
+</div>
+
+<script src="/config.js"></script>
+<script>
+/* ============================================================
+   CONFIG  —  edit these, then save the file
+   ============================================================ */
+const CONFIG = {
+  companyName: "Compliance PH Inc.",
+  roleTitle: "Quality Assurance Specialist",
+  timeLimitSeconds: 900,          // 15 minutes for 30 questions. Adjust as needed.
+  numQuestions: 30,               // questions sampled from the BANK below (bank has 38)
+
+  // Set once in /config.js — no need to edit this line.
+  apiEndpoint: (window.PH_CONFIG&&window.PH_CONFIG.apiUrl)||"",
+  submitToken: "ph-hub-submit-key",   // must match SUBMIT_TOKEN in the People Hub API script
+
+  strongThreshold: 85,            // % to label "Interview" (QA needs a higher bar)
+  reviewThreshold: 70,            // % to label "Review"; below = "Below bar"
+
+  jobPreview: [
+    "Reviewing and scoring agent calls and chats against quality standards",
+    "Giving clear, evidence-based feedback and coaching",
+    "Strong written English and close attention to detail are essential",
+    "Day shift on Australian hours (early start), with reliable attendance"
+  ]
+};
+
+/* ============================================================
+   QUESTION BANK  (correct option marked c:true)
+   types: english | detail | comprehension | judgment | numeracy
+   ============================================================ */
+const BANK = [
+  /* ---- English & writing accuracy ---- */
+  {type:'english', q:'Choose the correctly punctuated sentence.', o:[
+    {t:'The agent did not confirm the customer\u2019s identity before processing the request.',c:true},
+    {t:'The agent did not confirm the customers identity, before processing the request.'},
+    {t:'The agent, did not confirm the customer\u2019s identity before processing the request.'},
+    {t:'The agent did not confirm the customers\u2019 identity before processing the request,.'}]},
+  {type:'english', q:'Which sentence is grammatically correct?', o:[
+    {t:'Each of the agents has met their target.',c:true},
+    {t:'Each of the agents have met their target.'},
+    {t:'Each of the agents have met his target.'},
+    {t:'Each of the agent has met their target.'}]},
+  {type:'english', q:'Choose the correct spelling.', o:[
+    {t:'receive',c:true},{t:'recieve'},{t:'receeve'},{t:'receve'}]},
+  {type:'english', q:'Choose the correct word: "The supervisor will ___ the new policy to the team."', o:[
+    {t:'implement',c:true},{t:'implament'},{t:'impliment'},{t:'emplement'}]},
+  {type:'english', q:'Select the sentence with correct subject\u2013verb agreement.', o:[
+    {t:'The list of errors is growing.',c:true},
+    {t:'The list of errors are growing.'},
+    {t:'The list of errors were growing.'},
+    {t:'The list of errors have grown.'}]},
+  {type:'english', q:'Which is the most professional rewrite of: "u didnt say the disclosure which is a big problem"?', o:[
+    {t:'You did not read the required disclosure, which is a significant compliance issue.',c:true},
+    {t:'You didnt say the disclosure and thats a big problem.'},
+    {t:'U missed the disclosure, big problem there.'},
+    {t:'The disclosure wasnt said, big issue.'}]},
+  {type:'english', q:'Choose the correct spelling.', o:[
+    {t:'accommodate',c:true},{t:'accomodate'},{t:'acommodate'},{t:'accommadate'}]},
+  {type:'english', q:'Complete correctly: "This evaluation was ___ than last month\u2019s."', o:[
+    {t:'more thorough',c:true},{t:'more thoroughly'},{t:'thoroughest'},{t:'most thorough'}]},
+  {type:'english', q:'Which sentence contains no error?', o:[
+    {t:'There are three errors in this call.',c:true},
+    {t:'Their are three errors in this call.'},
+    {t:'They\u2019re are three errors in this call.'},
+    {t:'There\u2019re three error\u2019s in this call.'}]},
+  {type:'english', q:'Which sentence uses apostrophes correctly?', o:[
+    {t:'It\u2019s important to note the agent\u2019s tone.',c:true},
+    {t:'Its important to note the agents tone.'},
+    {t:'Its\u2019 important to note the agents\u2019 tone.'},
+    {t:'It\u2019s important to note the agents tone.'}]},
+
+  /* ---- Attention to detail / error spotting ---- */
+  {type:'detail', q:'Account numbers must be exactly 8 digits. Which entry is INVALID?', o:[
+    {t:'4821007',c:true},{t:'48210037'},{t:'90011524'},{t:'11223344'}]},
+  {type:'detail', q:'Three dates use the same format and one does not. Which is the odd one out?\n03/15/2025, 04/02/2025, 2025-05-10, 06/21/2025', o:[
+    {t:'2025-05-10',c:true},{t:'03/15/2025'},{t:'04/02/2025'},{t:'06/21/2025'}]},
+  {type:'detail', q:'Which sentence contains a doubled word?', o:[
+    {t:'The the agent verified the account.',c:true},
+    {t:'The agent verified the account.'},
+    {t:'The agent verified the customer account.'},
+    {t:'An agent verified the account.'}]},
+  {type:'detail', q:'An agent\u2019s log shows 28 resolved and 15 escalated out of 45 calls handled. Is the log internally consistent (resolved + escalated should equal handled)?', o:[
+    {t:'No \u2013 28 + 15 = 43, not 45',c:true},
+    {t:'Yes \u2013 the numbers match'},
+    {t:'No \u2013 they should total 50'},
+    {t:'Cannot be determined'}]},
+  {type:'detail', q:'Which name is spelled differently from the others?\nCatherine, Catherine, Cathernie, Catherine', o:[
+    {t:'Cathernie',c:true},{t:'the first Catherine'},{t:'the second Catherine'},{t:'they are all the same'}]},
+  {type:'detail', q:'A scorecard lists: Greeting 10, Verification 20, Resolution 35, Closing 10, Compliance 20. The total should be 100. Does it?', o:[
+    {t:'No \u2013 it totals 95',c:true},
+    {t:'Yes \u2013 it totals 100'},
+    {t:'No \u2013 it totals 105'},
+    {t:'No \u2013 it totals 90'}]},
+  {type:'detail', q:'Phone numbers must have 11 digits. Which one is the wrong length?', o:[
+    {t:'0917123456',c:true},{t:'09171234567'},{t:'09181234567'},{t:'09991234567'}]},
+  {type:'detail', q:'Early in a call the agent says a refund takes 3\u20135 business days; later in the same call the agent says 7\u201310 business days. What is the issue?', o:[
+    {t:'The agent gave conflicting timeframes for the same refund',c:true},
+    {t:'There is no issue; both are acceptable'},
+    {t:'The refund is too slow'},
+    {t:'The agent should not mention timeframes'}]},
+
+  /* ---- Comprehension / analysing an interaction ---- */
+  {type:'comprehension',
+    passage:'Customer: I was charged twice for my subscription this month.\nAgent: I understand. Let me check \u2014 I can see two charges dated March 3. I\u2019ll process a refund for the duplicate now, and you\u2019ll see it in 3\u20135 business days.',
+    q:'What was the customer\u2019s main issue?', o:[
+    {t:'They were charged twice (a duplicate charge)',c:true},
+    {t:'Their subscription was cancelled'},
+    {t:'They wanted to upgrade'},
+    {t:'They could not log in'}]},
+  {type:'comprehension',
+    passage:'Customer: I was charged twice for my subscription this month.\nAgent: I understand. Let me check \u2014 I can see two charges dated March 3. I\u2019ll process a refund for the duplicate now, and you\u2019ll see it in 3\u20135 business days.',
+    q:'What did the agent commit to?', o:[
+    {t:'Refunding the duplicate charge within 3\u20135 business days',c:true},
+    {t:'Cancelling the subscription'},
+    {t:'Escalating to a manager'},
+    {t:'Calling the customer back tomorrow'}]},
+  {type:'comprehension',
+    passage:'Customer: What\u2019s the current balance on my account?\nAgent: Sure, your balance is $240.',
+    q:'What did the agent fail to do before sharing account information?', o:[
+    {t:'Verify the customer\u2019s identity',c:true},
+    {t:'Greet the customer'},
+    {t:'Offer a refund'},
+    {t:'Transfer the call'}]},
+  {type:'comprehension',
+    passage:'Customer: This is the third time I\u2019ve called about this!\nAgent: I completely understand your frustration, and I\u2019m sorry for the repeated trouble. Let me make sure we fully resolve this for you today.',
+    q:'How did the agent handle the customer\u2019s frustration?', o:[
+    {t:'Acknowledged the frustration and committed to resolving it',c:true},
+    {t:'Ignored it and read the script'},
+    {t:'Told the customer to calm down'},
+    {t:'Ended the call'}]},
+  {type:'comprehension',
+    passage:'Agent: I\u2019m sorry, that\u2019s not my department. You\u2019ll have to call another number. (call ends)',
+    q:'What is the main problem with the agent\u2019s handling?', o:[
+    {t:'They ended the call abruptly without helping or transferring properly',c:true},
+    {t:'They were too detailed'},
+    {t:'They verified the customer twice'},
+    {t:'They offered too many options'}]},
+  {type:'comprehension',
+    passage:'Agent: For security, may I confirm your full name and date of birth?\nCustomer: (provides details)\nAgent: Thank you \u2014 you\u2019re now verified. How can I help?',
+    q:'Which required step did the agent complete here?', o:[
+    {t:'Identity verification',c:true},
+    {t:'Processing a payment'},
+    {t:'Closing the account'},
+    {t:'Offering a promotion'}]},
+
+  /* ---- QA judgment & scoring ---- */
+  {type:'judgment', q:'In QA, a "fatal" or "auto-fail" error usually means:', o:[
+    {t:'An error serious enough (e.g. a compliance or data-privacy breach) to fail the whole evaluation, regardless of other scores',c:true},
+    {t:'Any small mistake the agent makes'},
+    {t:'A typo in the agent\u2019s notes'},
+    {t:'A call that lasted too long'}]},
+  {type:'judgment', q:'Two QA analysts score the same call very differently. The main purpose of a calibration session is to:', o:[
+    {t:'Align scoring standards so evaluations are consistent across analysts',c:true},
+    {t:'Decide which analyst is right and reprimand the other'},
+    {t:'Lower everyone\u2019s scores'},
+    {t:'Stop scoring that agent'}]},
+  {type:'judgment', q:'An agent who is also your friend disputes a low score. You should:', o:[
+    {t:'Re-review the call objectively against the rubric and explain the score with evidence',c:true},
+    {t:'Raise the score because they are your friend'},
+    {t:'Ignore the dispute'},
+    {t:'Ask another agent to decide'}]},
+  {type:'judgment', q:'Which is the most effective QA feedback?', o:[
+    {t:'Specific, evidence-based, and tied to behaviours the agent can improve',c:true},
+    {t:'General praise with no detail'},
+    {t:'A reminder that the agent "needs to do better"'},
+    {t:'A comment about the agent\u2019s personality'}]},
+  {type:'judgment', q:'Which QA comment is the most objective?', o:[
+    {t:'The agent did not verify the customer\u2019s identity before discussing the account (timestamp 1:12).',c:true},
+    {t:'The agent was annoying.'},
+    {t:'The agent sounded bad on this one.'},
+    {t:'Just a poor call overall.'}]},
+  {type:'judgment', q:'An agent was warm and friendly but skipped the required data-privacy disclosure. The call should be:', o:[
+    {t:'Marked down for the compliance miss, despite the good tone',c:true},
+    {t:'Given full marks because the customer was happy'},
+    {t:'Ignored \u2013 tone is all that matters'},
+    {t:'Passed automatically'}]},
+  {type:'judgment', q:'A QA specialist should base scores primarily on:', o:[
+    {t:'The documented rubric and what actually happened in the interaction',c:true},
+    {t:'How they personally feel about the agent'},
+    {t:'The agent\u2019s tenure'},
+    {t:'How busy the day was'}]},
+  {type:'judgment', q:'You notice the same error appearing across many different agents. The best action is to:', o:[
+    {t:'Flag it as a trend and raise it for coaching or a process review',c:true},
+    {t:'Quietly fail each agent and move on'},
+    {t:'Ignore it since it is common'},
+    {t:'Only mention it to your favourite agent'}]},
+
+  /* ---- Numeracy & metrics ---- */
+  {type:'numeracy', q:'An agent scored 90 out of 120 on a scorecard. What percentage is that?', o:[
+    {t:'75%',c:true},{t:'70%'},{t:'80%'},{t:'67%'}]},
+  {type:'numeracy', q:'Five calls scored 80, 90, 100, 70, and 60. What is the average score?', o:[
+    {t:'80',c:true},{t:'78'},{t:'82'},{t:'90'}]},
+  {type:'numeracy', q:'A passing QA score is 92%. An agent scored 88%. By how much did they fall short?', o:[
+    {t:'4 percentage points',c:true},{t:'8 percentage points'},{t:'2 percentage points'},{t:'12 percentage points'}]},
+  {type:'numeracy', q:'A scorecard is Compliance 40, Communication 30, Resolution 30. An agent earns full Compliance and Resolution but 0 on Communication. Their total score is:', o:[
+    {t:'70%',c:true},{t:'60%'},{t:'30%'},{t:'100%'}]},
+  {type:'numeracy', q:'Out of 50 calls audited, 6 failed. What is the pass rate?', o:[
+    {t:'88%',c:true},{t:'12%'},{t:'94%'},{t:'86%'}]},
+  {type:'numeracy', q:'An agent scored 95% last month and 86% this month. The change is:', o:[
+    {t:'A decrease of 9 percentage points',c:true},
+    {t:'An increase of 9 percentage points'},
+    {t:'A decrease of 11 percentage points'},
+    {t:'No change'}]}
+];
+
+/* ============================================================
+   FIT / BACKGROUND  (flagged, not scored right/wrong)
+   ============================================================ */
+const FIT = [
+  {id:'experience', q:'Do you have prior experience in a BPO or call-centre environment?', o:['Yes, as a QA analyst','Yes, as a call-centre agent','No call-centre experience'], flagIf:{'No call-centre experience':'soft'}},
+  {id:'nightshift', q:'This role follows Australian business hours, so the shift starts early in the morning (often around 6\u20137 AM). Can you reliably start that early, every shift?', o:['Yes','No','Depends on the details'], flagIf:{'No':'hard'}},
+  {id:'attendance', q:'Can you reliably commit to your assigned schedule and be on time every day?', o:['Yes, always','Most of the time','No'], flagIf:{'No':'hard','Most of the time':'soft'}},
+  {id:'internet', q:'You\u2019ll be working from home. Do you have stable internet, a quiet space, and a backup for power or internet during brownouts?', o:['Yes, all three','Internet only, no backup','No'], flagIf:{'No':'hard','Internet only, no backup':'soft'}},
+  {id:'feedback', q:'QA involves scoring peers and giving honest feedback. Are you comfortable doing that objectively, even when it\u2019s uncomfortable?', o:['Yes, comfortable','Somewhat','No'], flagIf:{'No':'soft'}},
+  {id:'start', q:'How soon can you start?', o:['Immediately','1\u20132 weeks','2\u20134 weeks','More than a month'], flagIf:{}},
+  {id:'detail', q:'How would you rate your own attention to detail?', o:['Excellent','Good','Average','Needs improvement'], flagIf:{}}
+];
+
+/* ============================================================
+   Send a submission to the Google Sheet endpoint
+   ============================================================ */
+async function saveSubmission(rec){
+  if(!CONFIG.apiEndpoint){ console.warn('No sheetEndpoint set \u2014 submission not saved.'); return; }
+  try{
+    await fetch(CONFIG.apiEndpoint, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(rec)});
+  }catch(e){ console.error('Submission failed:', e); }
+}
+
+/* ============================================================
+   App
+   ============================================================ */
+const app = document.getElementById('app');
+document.getElementById('brandName').textContent = CONFIG.companyName;
+document.getElementById('footNote').textContent = CONFIG.apiEndpoint
+  ? 'Your answers are sent securely to our hiring team.'
+  : 'Setup note: paste your Google Sheet URL into CONFIG.apiEndpoint before going live.';
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+let state = {};
+function resetState(){
+  const sampled = shuffle(BANK).slice(0, Math.min(CONFIG.numQuestions, BANK.length)).map(q => ({...q, o: shuffle(q.o)}));
+  state = {candidate:{name:'',email:'',phone:''}, fit:{}, fitIdx:0, questions:sampled, qIdx:0, answers:{}, timeLeft:CONFIG.timeLimitSeconds, timer:null, startedAt:null};
+}
+
+function renderIntro(){
+  const mins=Math.round(CONFIG.timeLimitSeconds/60);
+  app.innerHTML = `
+  <div class="card">
+    <div class="eyebrow">Now hiring</div>
+    <h1>${esc(CONFIG.roleTitle)}</h1>
+    <p class="lead">This assessment has ${CONFIG.numQuestions} questions and a ${mins}-minute time limit. It checks written English, attention to detail, comprehension, QA judgment, and basic metrics. Please read about the role first.</p>
+    <div class="preview"><div class="preview-title">What this role really involves</div><ul>${CONFIG.jobPreview.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+    <label class="field"><span>Full name</span><input id="c_name" type="text" autocomplete="name" placeholder="Juan Dela Cruz"></label>
+    <label class="field"><span>Email</span><input id="c_email" type="email" autocomplete="email" placeholder="you@email.com"></label>
+    <label class="field"><span>Mobile number</span><input id="c_phone" type="tel" autocomplete="tel" placeholder="09xx xxx xxxx"></label>
+    <button class="btn btn-primary" id="startBtn" disabled>Start assessment</button>
+  </div>`;
+  const n=document.getElementById('c_name'),e=document.getElementById('c_email'),p=document.getElementById('c_phone'),b=document.getElementById('startBtn');
+  const chk=()=>{b.disabled=!(n.value.trim()&&e.value.trim()&&p.value.trim());};
+  [n,e,p].forEach(el=>el.addEventListener('input',chk));
+  b.addEventListener('click',()=>{state.candidate={name:n.value.trim(),email:e.value.trim(),phone:p.value.trim()};renderFit();});
+}
+
+function renderFit(){
+  const i=state.fitIdx, item=FIT[i];
+  app.innerHTML = `
+  <div class="card">
+    <div class="steps">${segs(0)}</div>
+    <div class="qcount">About you \u00b7 ${i+1} of ${FIT.length}</div>
+    <div class="qtext">${esc(item.q)}</div>
+    <div class="options" id="opts">${item.o.map(t=>`<label class="opt"><input type="radio" name="fit" value="${esc(t)}"><span>${esc(t)}</span></label>`).join('')}</div>
+    <div class="navrow">${i>0?'<button class="btn btn-ghost" id="back">Back</button>':''}<button class="btn btn-primary" id="next" disabled>${i===FIT.length-1?'Continue to test':'Next'}</button></div>
+  </div>`;
+  wireOptions(()=>{document.getElementById('next').disabled=false;});
+  const pre=state.fit[item.id];
+  if(pre!==undefined){const lbl=[...document.querySelectorAll('#opts .opt')].find(l=>l.querySelector('input').value===pre);if(lbl){lbl.classList.add('sel');lbl.querySelector('input').checked=true;document.getElementById('next').disabled=false;}}
+  document.getElementById('next').addEventListener('click',()=>{state.fit[item.id]=document.querySelector('input[name=fit]:checked').value;if(i===FIT.length-1){startTest();}else{state.fitIdx++;renderFit();}});
+  const back=document.getElementById('back'); if(back) back.addEventListener('click',()=>{state.fitIdx--;renderFit();});
+}
+
+function startTest(){
+  state.startedAt=Date.now(); state.timeLeft=CONFIG.timeLimitSeconds; state.qIdx=0;
+  if(state.timer) clearInterval(state.timer);
+  state.timer=setInterval(()=>{state.timeLeft--;updateTimer();if(state.timeLeft<=0){clearInterval(state.timer);finishTest(true);}},1000);
+  renderQuestion();
+}
+function updateTimer(){
+  const t=document.getElementById('timerVal'),f=document.getElementById('timerFill'); if(!t||!f) return;
+  const m=Math.floor(state.timeLeft/60),s=state.timeLeft%60; t.textContent=`${m}:${String(s).padStart(2,'0')}`;
+  const pct=Math.max(0,state.timeLeft/CONFIG.timeLimitSeconds*100); f.style.width=pct+'%';
+  f.style.background=pct<15?'var(--red)':pct<35?'var(--amber)':'var(--teal)';
+}
+function renderQuestion(){
+  const i=state.qIdx,q=state.questions[i],m=Math.floor(state.timeLeft/60),s=state.timeLeft%60;
+  app.innerHTML = `
+  <div class="card">
+    <div class="steps">${segs(1)}</div>
+    <div class="timer-wrap"><span class="timer-label">Time remaining</span><span class="timer-val" id="timerVal">${m}:${String(s).padStart(2,'0')}</span></div>
+    <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
+    <div class="qcount">Question ${i+1} of ${state.questions.length}</div>
+    <div class="qtext">${esc(q.q)}</div>
+    ${q.passage?`<div class="passage">${esc(q.passage)}</div>`:''}
+    <div class="options" id="opts">${q.o.map((opt,k)=>`<label class="opt" data-k="${k}"><input type="radio" name="q" value="${k}"><span>${esc(opt.t)}</span></label>`).join('')}</div>
+    <div class="navrow"><button class="btn btn-primary" id="next" disabled>${i===state.questions.length-1?'Finish':'Next'}</button></div>
+  </div>`;
+  updateTimer(); wireOptions(()=>{document.getElementById('next').disabled=false;});
+  const pre=state.answers[i];
+  if(pre!==undefined){const lbl=document.querySelector(`#opts .opt[data-k="${pre}"]`);if(lbl){lbl.classList.add('sel');lbl.querySelector('input').checked=true;document.getElementById('next').disabled=false;}}
+  document.getElementById('next').addEventListener('click',()=>{
+    state.answers[i]=parseInt(document.querySelector('input[name=q]:checked').value,10);
+    if(i===state.questions.length-1){clearInterval(state.timer);finishTest(false);}else{state.qIdx++;renderQuestion();}
+  });
+}
+
+async function finishTest(timedOut){
+  let correct=0; const byType={};
+  state.questions.forEach((q,i)=>{
+    if(!byType[q.type]) byType[q.type]=[0,0];
+    const a=state.answers[i]; const ok=a!==undefined&&q.o[a]&&q.o[a].c===true;
+    byType[q.type][1]++; if(ok){correct++;byType[q.type][0]++;}
+  });
+  const total=state.questions.length, pct=Math.round(correct/total*100);
+  const flags=[];
+  FIT.forEach(f=>{const v=state.fit[f.id];const lvl=f.flagIf[v];if(lvl) flags.push({level:lvl,text:flagText(f.id,v)});});
+  let band='below'; if(pct>=CONFIG.strongThreshold) band='strong'; else if(pct>=CONFIG.reviewThreshold) band='review';
+  if(band==='strong'&&flags.some(f=>f.level==='hard')) band='review';
+  const recLabel={strong:'Interview',review:'Review',below:'Below bar'}[band];
+  const rec={
+    token:CONFIG.submitToken, exam:'qa', role:CONFIG.roleTitle,
+    name:state.candidate.name,email:state.candidate.email,phone:state.candidate.phone,
+    score:pct,correct,total,band,recommendation:recLabel,timedOut,
+    byType:Object.fromEntries(Object.entries(byType).map(([k,v])=>[k,v[1]?Math.round(v[0]/v[1]*100):''])),
+    answers:buildDetail(), fit:state.fit, flags, durationSec:state.startedAt?Math.round((Date.now()-state.startedAt)/1000):''
+  };
+  renderDone();
+  saveSubmission(rec);
+}
+function flagText(id,v){
+  const map={
+    experience:'No prior call-centre experience',
+    nightshift:'Cannot start early for AU hours',
+    attendance:v==='No'?'Cannot commit to schedule':'Inconsistent attendance',
+    internet:v==='No'?'No reliable WFH setup':'No power/internet backup',
+    feedback:'Uncomfortable giving feedback'
+  };
+  return map[id]||(id+': '+v);
+}
+function renderDone(){
+  if(state.timer) clearInterval(state.timer);
+  app.innerHTML = `
+  <div class="card" style="text-align:center">
+    <div class="done-mark"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+    <h2>Thanks, ${esc(state.candidate.name.split(' ')[0]||'there')} \u2014 you\u2019re all set</h2>
+    <p class="lead" style="margin-top:8px">Your assessment has been submitted to our hiring team. If you\u2019re a match for the ${esc(CONFIG.roleTitle)} role, we\u2019ll reach out by email or phone.</p>
+    <p class="muted" style="margin-top:18px">${KIOSK?'Please hand the computer back to our staff.':'You can close this window now.'}</p>
+  </div>`;
+  kioskReturn();
+}
+
+
+/* Builds the per-question answer sheet sent with the submission */
+function buildDetail(){
+  return state.questions.map(function(q,i){
+    var a=state.answers[i];
+    var chosen=(a!==undefined && q.o[a]) ? q.o[a].t : '';
+    var corrOpt=q.o.filter(function(o){return o.c===true;})[0];
+    var corr=corrOpt?corrOpt.t:'';
+    return {n:i+1, type:q.type, q:q.q, passage:q.passage||'', chosen:chosen, correct:corr,
+            ok:(chosen!=='' && chosen===corr)};
+  });
+}
+
+/* Kiosk mode: when opened from the station, hand back automatically for the next applicant */
+var KIOSK = new URLSearchParams(location.search).get('kiosk')==='1';
+function kioskReturn(){ if(KIOSK) setTimeout(function(){ location.href='../kiosk/'; }, 8000); }
+function wireOptions(onPick){
+  document.querySelectorAll('#opts .opt').forEach(lbl=>{
+    lbl.addEventListener('click',()=>{document.querySelectorAll('#opts .opt').forEach(x=>x.classList.remove('sel'));lbl.classList.add('sel');lbl.querySelector('input').checked=true;onPick();});
+  });
+}
+function segs(active){return [0,1].map(i=>`<div class="seg ${i<active?'done':i===active?'active':''}"></div>`).join('');}
+
+function init(){ if(KIOSK){var b=document.querySelector('a.brand'); if(b) b.removeAttribute('href');} resetState(); renderIntro(); }
+init();
+</script>
+</body>
+</html>

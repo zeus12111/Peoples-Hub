@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Workstation — People Hub</title>
+<link rel="icon" href="../assets/compliance-ph.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBFAF6; --sheet:#FFFFFF; --drawer:#F5EEDB; --kraft:#E8D6A6; --kraft-soft:#F3E9CC; --kraft-deep:#CDB679;
+    --ink:#1D1B16; --ink-2:#4F4A3D; --ink-3:#6B6553; --rule:#DED5BE; --rule-soft:#ECE5D2;
+    --blue:#1F3FA8; --blue-tint:#E7EBF8; --red:#B8322A; --red-tint:#F8E7E4; --green:#2B6E3F; --amber:#8A5D0B;
+    --sans:'Libre Franklin',system-ui,-apple-system,'Segoe UI',sans-serif; --type:'Courier Prime','Courier New',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);font-size:14px;line-height:1.45;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--kraft)}
+  :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+  button,input,select{font:inherit;color:inherit}
+  button{cursor:pointer}
+  [hidden]{display:none!important}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  svg.i{width:15px;height:15px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .btn{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:.87rem;border:1px solid var(--rule);background:var(--sheet);border-radius:4px;padding:7px 12px;white-space:nowrap;transition:background .15s,border-color .15s}
+  .btn:hover{background:var(--kraft-soft);border-color:var(--kraft-deep)}
+  .btn:disabled{opacity:.55;cursor:default}
+  .btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn.primary:hover{background:#000}
+  .btn.danger{color:var(--red);border-color:#E5C3BE}
+  .btn.danger:hover{background:var(--red-tint)}
+  .btn.sm{padding:4px 9px;font-size:.8rem}
+  .err{color:var(--red);background:var(--red-tint);border-radius:3px;padding:8px 12px;font-size:.87rem;margin-top:12px}
+  input[type=text],input[type=password],input[type=date],input[type=time],select{border:1px solid var(--rule);background:var(--sheet);border-radius:4px;padding:6px 9px;font-size:.9rem}
+  input:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-tint)}
+  label.f{display:flex;flex-direction:column;gap:3px;font-family:var(--type);font-size:.8rem;color:var(--ink-2)}
+
+  /* sign in */
+  #auth{min-height:100vh;display:grid;place-items:center;padding:24px;background:var(--kraft-soft)}
+  .folder{width:100%;max-width:420px;position:relative;padding-top:30px}
+  .folder-tab{position:absolute;top:0;left:0;height:31px;padding:6px 18px 0;background:var(--kraft);border-radius:6px 6px 0 0;font-weight:700;font-size:.82rem}
+  .folder-body{background:var(--kraft);border-radius:0 6px 6px 6px;padding:10px}
+  .sheet{background:var(--sheet);border-radius:3px;padding:28px;box-shadow:0 1px 2px rgba(60,45,10,.08),0 12px 30px -16px rgba(60,45,10,.35)}
+  .sheet .logos img{height:28px}
+  .sheet h1{font-size:1.75rem;font-weight:800;letter-spacing:-.02em;margin-top:16px;line-height:1.15}
+  .sheet p.lede{color:var(--ink-2);margin-top:6px}
+  .line{margin-top:18px}
+  .line label{display:block;font-family:var(--type);font-size:.82rem;color:var(--ink-2)}
+  .line input{width:100%;margin-top:2px;border:0;border-bottom:1.5px dotted var(--ink-3);background:transparent;padding:7px 2px;font-family:var(--type);font-size:1.02rem;border-radius:0;box-shadow:none}
+  .line input:focus{border-bottom:1.5px solid var(--blue);box-shadow:none}
+  .sheet .btn.primary{width:100%;justify-content:center;margin-top:22px;padding:11px}
+  .foot{font-size:.78rem;color:var(--ink-3);margin-top:16px}
+
+  /* shell */
+  .bar{display:flex;align-items:center;gap:16px;padding:10px 24px;border-bottom:1px solid var(--rule);flex-wrap:wrap}
+  .logos{display:flex;align-items:center;gap:10px}.logos img{height:24px;width:auto;display:block}.logos i{width:1px;height:18px;background:var(--rule)}
+  .brand{font-weight:800;white-space:nowrap}.brand span{color:var(--ink-3);font-weight:500}
+  .nav{display:flex;gap:4px}
+  .nav button{border:0;background:none;padding:6px 12px;border-radius:4px;font-weight:600;color:var(--ink-2)}
+  .nav button:hover{background:var(--kraft-soft)}
+  .nav button[aria-current="page"]{background:var(--kraft);color:var(--ink)}
+  .nav .soon{padding:6px 10px;color:var(--ink-3);font-weight:500;font-size:.9rem}
+  .who{margin-left:auto;font-family:var(--type);font-size:.85rem;color:var(--ink-2);white-space:nowrap}
+
+  /* schedule */
+  .head{display:flex;align-items:center;gap:14px;padding:14px 24px 12px;flex-wrap:wrap}
+  .head h1{font-size:1.75rem;font-weight:800;letter-spacing:-.02em}
+  .wk{display:flex;align-items:center;gap:6px;font-family:var(--type);font-size:.95rem;color:var(--ink-2)}
+  .wk .btn{padding:5px 8px}
+  .state{font-family:var(--type);font-size:.75rem;font-weight:700;letter-spacing:.06em;border:1.5px solid var(--ink-3);color:var(--ink-2);border-radius:3px;padding:1px 6px}
+  .state.pub{border-color:var(--green);color:var(--green)}
+  .acts{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .work{display:grid;grid-template-columns:1fr 300px;border-top:3px solid var(--kraft);min-height:calc(100vh - 120px)}
+  .gridwrap{overflow:auto;max-height:calc(100vh - 120px)}
+  table.g{width:100%;border-collapse:collapse;min-width:900px}
+  .g th{position:sticky;top:0;z-index:2;background:var(--paper);text-align:left;font-size:.8rem;font-weight:700;color:var(--ink-2);padding:9px 10px;border-bottom:1.5px solid var(--ink);white-space:nowrap}
+  .g th.next,.g td.next{border-left:1px dashed var(--rule)}
+  .g th.next{color:var(--ink-3);font-weight:600}
+  .g td{padding:0;border-bottom:1px dotted var(--kraft-deep);white-space:nowrap;height:33px}
+  .g tr.sec td{background:var(--drawer);font-weight:700;font-size:.85rem;border-bottom:1px solid var(--rule);padding:6px 10px 5px 24px}
+  .g tr.sec td span{font-family:var(--type);font-weight:400;color:var(--ink-3);margin-left:8px}
+  .g td.nm{padding:0 10px 0 24px;font-weight:600}
+  .g td.nm small{font-family:var(--type);font-weight:400;color:var(--ink-3);font-size:.78rem;margin-left:6px}
+  .newb{font-size:.62rem;font-weight:800;letter-spacing:.08em;color:var(--ink-3);border:1px solid var(--rule);border-radius:3px;padding:0 3px;margin-left:6px;vertical-align:1px}
+  .cell{display:flex;align-items:center;width:100%;height:33px;padding:0 10px;border:0;background:none;text-align:left}
+  .cell:hover{background:var(--kraft-soft)}
+  .cell[aria-expanded="true"]{outline:2px solid var(--blue);outline-offset:-2px;background:var(--blue-tint)}
+  .ro .cell{cursor:default}.ro .cell:hover{background:none}
+  td.next .cell{color:var(--ink-3)}
+  .shift{font-family:var(--type);font-size:.82rem}
+  .tag{font-size:.75rem;font-weight:700;border-radius:3px;padding:1px 7px}
+  .tag.off{background:var(--kraft-soft);color:var(--ink-2);border:1px solid var(--kraft-deep)}
+  .tag.risk{color:var(--red);border:1.5px solid var(--red)}
+  .tag.move{border:1.5px dashed var(--ink-2)}
+  .tag.gone{color:var(--ink-3);border:1px solid var(--rule);text-decoration:line-through}
+  .empty{padding:60px 24px;text-align:center;color:var(--ink-2)}
+  .empty b{display:block;font-size:1.1rem;color:var(--ink);margin-bottom:6px}
+  .empty .row{display:flex;gap:10px;justify-content:center;margin-top:18px}
+  .side{border-left:1px solid var(--rule);background:var(--drawer);padding:16px 18px}
+  .side h2{font-size:1.02rem;font-weight:700;padding-bottom:5px;border-bottom:1.5px solid var(--ink)}
+  .cnt{display:grid;grid-template-columns:1fr repeat(6,28px);font-size:.82rem;margin-top:6px}
+  .cnt span{padding:5px 0;border-bottom:1px dotted var(--kraft-deep)}
+  .cnt .n{font-family:var(--type);text-align:right}
+  .cnt .hd{font-weight:700;color:var(--ink-3);font-size:.75rem}
+  .cnt .red{color:var(--red);font-weight:700}
+  .chg{list-style:none;margin-top:6px}
+  .chg li{padding:7px 0;border-bottom:1px dotted var(--kraft-deep);font-size:.85rem}
+  .chg li small{display:block;font-family:var(--type);color:var(--ink-3);font-size:.78rem}
+  .chg .none{color:var(--ink-3)}
+  .sync{margin-top:18px;font-family:var(--type);font-size:.78rem;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+  .sync i{width:8px;height:8px;border-radius:50%;background:var(--green);flex:0 0 auto}
+  .sync.busy i{background:var(--amber)} .sync.bad i{background:var(--red)}
+
+  /* popover */
+  .pop{position:fixed;z-index:20;width:300px;background:var(--sheet);border:1px solid var(--rule);border-radius:4px;box-shadow:0 1px 2px rgba(60,45,10,.08),0 12px 30px -16px rgba(60,45,10,.35);padding:8px;max-height:70vh;overflow:auto}
+  .pop h4{font-size:.78rem;color:var(--ink-3);font-weight:600;margin:2px 4px 6px}
+  .pop button.opt{display:flex;justify-content:space-between;width:100%;border:0;background:none;text-align:left;padding:5px 6px;border-radius:3px;font-size:.87rem}
+  .pop button.opt:hover,.pop button.opt:focus-visible{background:var(--kraft-soft);outline:none}
+  .pop button.opt.on{background:var(--kraft)}
+  .pop button.opt b{font-family:var(--type);font-weight:400;color:var(--ink-3);font-size:.78rem}
+  .pop hr{border:0;border-top:1px dotted var(--kraft-deep);margin:6px 0}
+  .pop .custom{display:flex;gap:6px;align-items:center;padding:4px 6px}
+  .pop .custom input{width:104px;padding:4px 6px;font-size:.82rem}
+  .pop .confirm{padding:6px;font-size:.85rem}
+  .pop .confirm p{margin-bottom:8px}
+
+  /* admin views */
+  .page{padding:18px 24px 60px;max-width:1100px}
+  .page h1{font-size:1.75rem;font-weight:800;letter-spacing:-.02em}
+  .page h2{font-size:1.02rem;font-weight:700;padding-bottom:5px;border-bottom:1.5px solid var(--ink);margin-top:28px}
+  .page p.lede{color:var(--ink-2);margin-top:4px}
+  .addrow{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-top:12px;padding:12px;background:var(--drawer);border-radius:3px}
+  table.l{width:100%;border-collapse:collapse;margin-top:6px}
+  .l th{text-align:left;font-size:.8rem;font-weight:700;color:var(--ink-2);padding:7px 8px;border-bottom:1px solid var(--rule)}
+  .l td{padding:6px 8px;border-bottom:1px dotted var(--kraft-deep);vertical-align:middle}
+  .l td.t{font-family:var(--type)}
+  .l .muted{color:var(--ink-3)}
+  .note{font-family:var(--type);font-size:.82rem;color:var(--ink-2);margin-top:8px}
+  .ok{color:var(--green);font-family:var(--type);font-size:.82rem}
+
+  #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:4px;font-size:.87rem;z-index:30}
+
+  /* print */
+  #print{display:none}
+  @media print{
+    @page{size:A4 landscape;margin:9mm}
+    body{background:#fff}
+    body>*:not(#print){display:none!important}
+    #print{display:block;color:#111;font-family:var(--sans);font-size:10.5px}
+    #print .top{display:flex;align-items:flex-end;gap:14px;padding-bottom:6px;border-bottom:2px solid #111}
+    #print .logos img{height:26px}#print .logos i{background:#999}
+    #print h1{font-size:16px;font-weight:800;line-height:1.1}
+    #print .sub{font-family:var(--type);font-size:11px}
+    #print .prep{margin-left:auto;text-align:right;font-family:var(--type);font-size:10px;line-height:1.4}
+    #print table{width:100%;border-collapse:collapse;margin-top:6px}
+    #print th{font-size:10px;text-align:left;padding:3px 5px;border-bottom:1.5px solid #111}
+    #print td{padding:2px 5px;border-bottom:1px dotted #999;white-space:nowrap}
+    #print td.n{text-align:right;font-family:var(--type);color:#555;width:20px}
+    #print td.nm{font-weight:600}#print td.nm small{font-family:var(--type);font-weight:400;color:#555;margin-left:4px}
+    #print .next{border-left:1px dashed #888;color:#444}
+    #print tr.sec td{font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding-top:6px;border-bottom:1.5px solid #111}
+    #print .shift{font-family:var(--type);font-size:10px}
+    #print td{padding:1.6px 5px;font-size:10px}
+    #print td.nm small{font-size:9px}
+    #print .tag{font-size:9.5px;border:1px solid #111;border-radius:2px;padding:0 4px;background:none;color:#111}
+    #print .tag.off{background:#e6e6e6;border-color:#bbb}#print .tag.risk{border-width:1.5px}#print .tag.move{border-style:dashed}
+    #print .key{margin-top:6px;display:flex;justify-content:space-between;font-size:9.5px;color:#333}
+    #print tr{break-inside:avoid}
+  }
+  @media (max-width:900px){.work{grid-template-columns:1fr}.side{border-left:0;border-top:1px solid var(--rule)}.who{margin-left:0}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-l" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-r" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="1"/><path d="M6 14h12v7H6z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="1"/><path d="M16 8V4H4v12h4"/></symbol>
+</svg>
+
+<!-- ================= SIGN IN ================= -->
+<main id="auth" hidden>
+  <div class="folder">
+    <div class="folder-tab">Staff only</div>
+    <div class="folder-body">
+      <form class="sheet" id="authForm" novalidate>
+        <div class="logos"><img src="../assets/compliance-ph.png" alt="Compliance PH Inc."><i></i><img src="../assets/aos.png" alt="Australian Outsourcing Services"><i></i><img src="../assets/leads-direct.png" alt="Leads Direct"></div>
+        <h1 id="authTitle">Workstation</h1>
+        <p class="lede" id="authLede">Sign in with your staff account.</p>
+        <div class="line" id="nameLine" hidden><label for="aName">Your full name</label><input id="aName" type="text" autocomplete="name"></div>
+        <div class="line"><label for="aUser">Username</label><input id="aUser" type="text" autocomplete="username" autocapitalize="none" spellcheck="false"></div>
+        <div class="line"><label for="aPw">Password</label><input id="aPw" type="password" autocomplete="current-password"></div>
+        <button class="btn primary" id="authBtn" type="submit">Sign in</button>
+        <div id="authErr" role="alert"></div>
+        <p class="foot">Authorised staff only. Changes are logged with your name.</p>
+      </form>
+    </div>
+  </div>
+</main>
+
+<!-- ================= APP ================= -->
+<div id="app" hidden>
+  <header class="bar">
+    <span class="logos"><img src="../assets/compliance-ph.png" alt="Compliance PH Inc."><i></i><img src="../assets/aos.png" alt="Australian Outsourcing Services"><i></i><img src="../assets/leads-direct.png" alt="Leads Direct"></span>
+    <span class="brand"><span>People Hub ·</span> Workstation</span>
+    <nav class="nav" aria-label="Workstation">
+      <button data-view="schedule">Schedule</button>
+      <button data-view="staff" data-editor>Staff</button>
+      <button data-view="users" data-editor>Users</button>
+      <button data-view="account">My account</button>
+    </nav>
+    <span class="who" id="who"></span>
+    <button class="btn" id="outBtn">Sign out</button>
+  </header>
+
+  <section id="v-schedule">
+    <div class="head">
+      <h1>Schedule</h1>
+      <div class="wk">
+        <button class="btn" id="prevWk" aria-label="Previous week"><svg class="i"><use href="#i-l"/></svg></button>
+        <span id="wkLabel"></span>
+        <button class="btn" id="nextWk" aria-label="Next week"><svg class="i"><use href="#i-r"/></svg></button>
+      </div>
+      <span class="state" id="wkState"></span>
+      <div class="acts">
+        <button class="btn" id="printBtn"><svg class="i"><use href="#i-print"/></svg>Print schedule</button>
+        <button class="btn primary" id="pubBtn" data-editor>Publish week</button>
+      </div>
+    </div>
+    <div class="work">
+      <div class="gridwrap" id="gridwrap"></div>
+      <aside class="side">
+        <h2>This week</h2>
+        <div class="cnt" id="cnt"></div>
+        <h2 style="margin-top:22px">Changes since last week</h2>
+        <ul class="chg" id="chg"></ul>
+        <div class="sync" id="sync"><i></i><span></span></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="v-staff" class="page" hidden></section>
+  <section id="v-users" class="page" hidden></section>
+  <section id="v-account" class="page" hidden></section>
+</div>
+
+<div class="pop" id="pop" role="dialog" aria-label="Edit day" hidden></div>
+<div id="toast" role="status" hidden></div>
+<div id="print"></div>
+
+<script src="/config.js"></script>
+<script>
+/* The workstation backend URL is set once in /config.js (workstationUrl). */
+const WS = (window.PH_CONFIG && window.PH_CONFIG.workstationUrl) || '';
+
+const STATUS = {
+  OFF_REQ:   {label:'Off · request',      kind:'off'},
+  OFF_MGT:   {label:'Off · management',   kind:'off', short:'Off · mgt'},
+  OFF:       {label:'Off',                kind:'off'},
+  ABSENT:    {label:'Absent',             kind:'risk'},
+  ABSENT_MSG:{label:'Absent · with message', kind:'risk', short:'Absent · msg'},
+  SUSPENDED: {label:'Suspended',          kind:'risk'},
+  NO_WORK:   {label:'No work / holiday',  kind:'off', short:'No work'},
+  MATERNITY: {label:'Maternity leave',    kind:'off', short:'Maternity'},
+  ADMIN:     {label:'Moved to Admin',     kind:'move', short:'Admin'},
+  TBA:       {label:'TBA',                kind:'off'},
+  RESIGNED:  {label:'Resigned',           kind:'gone'},
+};
+const STATUS_ORDER = ['OFF_REQ','OFF_MGT','OFF','ABSENT','ABSENT_MSG','SUSPENDED','NO_WORK','MATERNITY','TBA','ADMIN'];
+const DAYN = ['Mon','Tue','Wed','Thu','Fri','Sat'];
+
+const store={get:k=>{try{return sessionStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{sessionStorage.setItem(k,v)}catch(e){}},del:k=>{try{sessionStorage.removeItem(k)}catch(e){}}};
+let TOKEN = store.get('ws_token') || '';
+let ME = null, SET = null, WEEK = null, D = null, VIEW = 'schedule', STAFF = [], USERS = [];
+const $ = id => document.getElementById(id);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const isEditor = () => ME && (ME.role==='management' || ME.role==='admin');
+
+/* ---------- API (POST, plain-text body: works with Apps Script without CORS setup) ---------- */
+async function api(action, data){
+  if(!WS) throw new Error('No workstation URL yet. Add workstationUrl to config.js, then re-upload the site.');
+  const ctl = new AbortController(); const t = setTimeout(()=>ctl.abort(), 30000);
+  try{
+    const r = await fetch(WS, {method:'POST', body: JSON.stringify(Object.assign({action, token:TOKEN}, data||{})), signal: ctl.signal});
+    const j = await r.json();
+    if(j && j.error==='auth' && action!=='login'){ signOut('Your session ended. Please sign in again.'); throw new Error('Signed out.'); }
+    return j;
+  }catch(e){ if(e.name==='AbortError') throw new Error('The server took too long to respond. Try again.'); throw e; }
+  finally{ clearTimeout(t); }
+}
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.hidden=false; clearTimeout(toast.h); toast.h=setTimeout(()=>t.hidden=true, 2600); }
+
+/* ---------- dates ---------- */
+const pad=n=>String(n).padStart(2,'0');
+const isoOf=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const dateOf=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d,12);};
+const addDays=(s,n)=>{const d=dateOf(s);d.setDate(d.getDate()+n);return isoOf(d);};
+function defaultWeek(){ const d=new Date(); const wd=d.getDay(); const back=(wd+6)%7; d.setDate(d.getDate()-back); let s=isoOf(d); if(wd===6||wd===0) s=addDays(s,7); return s; }
+const fmtD=(s,o)=>dateOf(s).toLocaleDateString('en-AU',o).replace(',','');
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const dm=s=>{const d=dateOf(s);return d.getDate()+' '+MON[d.getMonth()];};
+function weekLabel(){ const a=dateOf(WEEK), b=dateOf(addDays(WEEK,5)); return 'Week of Mon '+a.getDate()+(a.getMonth()!==b.getMonth()?' '+MON[a.getMonth()]:'')+' – Sat '+b.getDate()+' '+MON[b.getMonth()]+' '+b.getFullYear(); }
+function fmtTime(t){const [h,m]=t.split(':').map(Number);return (h%12||12)+':'+pad(m);}
+function fmtTimeAP(t){const [h,m]=t.split(':').map(Number);return (h%12||12)+':'+pad(m)+(h>=12?' PM':' AM');}
+const isShift=v=>/^\d\d:\d\d-\d\d:\d\d$/.test(v);
+function shiftLabel(v){const [a,b]=v.split('-');return fmtTime(a)+' – '+fmtTime(b);}
+function cellHtml(v,full){
+  v=String(v||'');
+  if(isShift(v)) return `<span class="shift">${shiftLabel(v)}</span>`;
+  if(v.startsWith('ACCOUNT:')) return `<span class="tag move">${esc(v.slice(8))}</span>`;
+  const s=STATUS[v]; if(s) return `<span class="tag ${s.kind}">${esc(full?s.label:(s.short||s.label))}</span>`;
+  return v?`<span class="shift">${esc(v)}</span>`:'<span class="shift" style="color:var(--ink-3)">—</span>';
+}
+function plain(v){ v=String(v||''); if(isShift(v)) return shiftLabel(v); if(v.startsWith('ACCOUNT:')) return 'moved to '+v.slice(8); return STATUS[v]?STATUS[v].label:v; }
+
+/* ---------- auth ---------- */
+let SETUP=false;
+async function boot(){
+  if(TOKEN){ try{ const r=await api('me'); if(r.ok){ ME=r.user; SET=r.settings; return enter(); } }catch(e){} }
+  showAuth();
+  try{ const r=await api('status'); if(r.ok && !r.hasUsers){ SETUP=true; $('authTitle').textContent='Set up the workstation'; $('authLede').textContent='No accounts exist yet. Create the first management account; you can add everyone else after.'; $('nameLine').hidden=false; $('authBtn').textContent='Create account'; $('aPw').autocomplete='new-password'; } }
+  catch(e){ $('authErr').innerHTML='<div class="err">'+esc(e.message)+'</div>'; }
+}
+function showAuth(){ $('app').hidden=true; $('auth').hidden=false; setTimeout(()=>$('aUser').focus(),0); }
+$('authForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const btn=$('authBtn'), err=$('authErr'); err.innerHTML='';
+  const username=$('aUser').value.trim(), password=$('aPw').value, name=$('aName').value.trim();
+  if(!username||!password||(SETUP&&!name)){ err.innerHTML='<div class="err">Fill in every field.</div>'; return; }
+  btn.disabled=true; const label=btn.textContent; btn.textContent='Checking…';
+  try{
+    const r=await api(SETUP?'bootstrap':'login',{username,password,name});
+    if(!r.ok){ err.innerHTML='<div class="err">'+esc(r.error)+'</div>'; return; }
+    TOKEN=r.token; store.set('ws_token',TOKEN); ME=r.user; SET=r.settings; $('aPw').value=''; enter();
+  }catch(e2){ err.innerHTML='<div class="err">'+esc(e2.message)+'</div>'; }
+  finally{ btn.disabled=false; btn.textContent=label; }
+});
+function signOut(msg){
+  if(TOKEN) fetch(WS,{method:'POST',body:JSON.stringify({action:'logout',token:TOKEN})}).catch(()=>{});
+  TOKEN=''; store.del('ws_token'); ME=null; SETUP=false; showAuth();
+  $('authErr').innerHTML=msg?'<div class="err">'+esc(msg)+'</div>':'';
+}
+$('outBtn').addEventListener('click',()=>signOut());
+
+/* ---------- shell ---------- */
+function enter(){
+  $('auth').hidden=true; $('app').hidden=false;
+  $('who').textContent=ME.name+' · '+ME.role[0].toUpperCase()+ME.role.slice(1);
+  document.querySelectorAll('[data-editor]').forEach(el=>el.hidden=!isEditor());
+  WEEK=WEEK||defaultWeek(); show('schedule');
+}
+document.querySelector('.nav').addEventListener('click',e=>{const b=e.target.closest('button[data-view]'); if(b) show(b.dataset.view);});
+function show(v){
+  VIEW=v; closePop();
+  ['schedule','staff','users','account'].forEach(k=>$('v-'+k).hidden=k!==v);
+  document.querySelectorAll('.nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.view===v?'page':'false'));
+  if(v==='schedule') loadWeek(); if(v==='staff') loadStaff(); if(v==='users') loadUsers(); if(v==='account') renderAccount();
+}
+
+/* ---------- schedule ---------- */
+$('prevWk').addEventListener('click',()=>{WEEK=addDays(WEEK,-7);loadWeek();});
+$('nextWk').addEventListener('click',()=>{WEEK=addDays(WEEK,7);loadWeek();});
+function setSync(state,text){ const s=$('sync'); s.className='sync'+(state?' '+state:''); s.lastElementChild.textContent=text; }
+async function loadWeek(){
+  closePop();
+  $('wkLabel').textContent=weekLabel();
+  $('gridwrap').innerHTML='<div class="empty">Loading the week…</div>';
+  try{ const r=await api('getWeek',{weekStart:WEEK}); if(!r.ok) throw new Error(r.error); D=r; SET=r.settings; renderWeek(); }
+  catch(e){ $('gridwrap').innerHTML='<div class="empty"><b>Could not load this week</b>'+esc(e.message)+'</div>'; }
+}
+function weekPeople(){
+  const ids=Object.keys(D.rows);
+  const byId={}; D.staff.forEach(s=>byId[s.id]=s);
+  return ids.map(id=>byId[id]||{id,name:'(removed staff)',section:'Other',order:9999}).sort((a,b)=>a.order-b.order);
+}
+function sectionsOf(people){
+  const order=SET.sections.slice(); people.forEach(p=>{if(order.indexOf(p.section)<0) order.push(p.section);});
+  return order.map(s=>({name:s,people:people.filter(p=>p.section===s)})).filter(s=>s.people.length);
+}
+function renderWeek(){
+  const meta=D.meta, has=Object.keys(D.rows).length>0;
+  const st=$('wkState'); st.hidden=!meta;
+  if(meta){ st.textContent=meta.status==='published'?'PUBLISHED · V'+meta.version:'DRAFT'; st.className='state'+(meta.status==='published'?' pub':''); }
+  $('pubBtn').disabled=!has||(meta&&meta.status==='published'); $('pubBtn').textContent=meta&&meta.version?'Publish again':'Publish week';
+  $('printBtn').disabled=!has;
+  if(!has){
+    const ed=isEditor();
+    $('gridwrap').innerHTML=`<div class="empty"><b>This week isn't set up yet</b>${ed?(D.prevExists?'Start from last week (one-off offs and absences are cleared, next-Monday entries carry over) or from everyone\'s usual shifts.':'There is no previous week to copy, so start from everyone\'s usual shifts.'):'Management hasn\'t prepared this week yet.'}
+      ${ed?`<div class="row">${D.prevExists?'<button class="btn primary" id="cpBtn"><svg class="i"><use href="#i-copy"/></svg>Copy last week</button>':''}<button class="btn${D.prevExists?'':' primary'}" id="usBtn">Start with usual shifts</button></div>`:''}</div>`;
+    if(ed){ const c=$('cpBtn'); if(c) c.onclick=()=>createWeek('copy'); $('usBtn').onclick=()=>createWeek('usual'); }
+    $('cnt').innerHTML=''; $('chg').innerHTML='<li class="none">Nothing yet.</li>';
+    setSync('', 'Not saved yet'); return;
+  }
+  const people=weekPeople(), secs=sectionsOf(people);
+  let h=`<table class="g${isEditor()?'':' ro'}"><thead><tr><th style="padding-left:24px">Name <span style="font-weight:400;font-family:var(--type)">(start)</span></th>`+
+    DAYN.map((d,i)=>`<th>${d} ${dateOf(addDays(WEEK,i)).getDate()}</th>`).join('')+`<th class="next">Next ${fmtD(addDays(WEEK,7),{weekday:'short',day:'numeric'})}</th></tr></thead><tbody>`;
+  secs.forEach(s=>{
+    h+=`<tr class="sec"><td colspan="8">${esc(s.name)}<span>${s.people.length} ${s.people.length===1?'person':'people'}</span></td></tr>`;
+    s.people.forEach(p=>{
+      const r=D.rows[p.id];
+      h+=`<tr><td class="nm">${esc(p.name)}${p.startDate?`<small>${esc(dm(p.startDate))}</small>`:''}${p.isNew?'<span class="newb">NEW</span>':''}</td>`+
+        r.cells.map((v,i)=>`<td><button class="cell" data-id="${esc(p.id)}" data-day="${i}" aria-label="${esc(p.name)}, ${DAYN[i]}: ${esc(plain(v))}"${isEditor()?' aria-haspopup="dialog" aria-expanded="false"':' tabindex="-1"'}>${cellHtml(v)}</button></td>`).join('')+
+        `<td class="next"><button class="cell" data-id="${esc(p.id)}" data-day="next" aria-label="${esc(p.name)}, next Monday: ${esc(plain(r.next))}"${isEditor()?' aria-haspopup="dialog" aria-expanded="false"':' tabindex="-1"'}>${cellHtml(r.next)}</button></td></tr>`;
+    });
+  });
+  $('gridwrap').innerHTML=h+'</tbody></table>';
+  renderSide(people);
+  const m=D.meta;
+  setSync('', m&&m.syncedAt?'Copied to Google Sheet · '+new Date(m.syncedAt).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):'Saved');
+}
+function renderSide(people){
+  const rows=people.map(p=>D.rows[p.id]);
+  const kind=v=>isShift(v)?'work':String(v).startsWith('ACCOUNT:')?'work':(STATUS[v]?(STATUS[v].kind==='move'?'work':STATUS[v].kind):'work');
+  const per=DAYN.map((d,i)=>{const c={work:0,off:0,risk:0};rows.forEach(r=>{const k=kind(r.cells[i]);if(c[k]!=null)c[k]++;});return c;});
+  $('cnt').innerHTML='<span class="hd"></span>'+DAYN.map(d=>`<span class="hd n">${d.slice(0,2)}</span>`).join('')+
+    '<span>Working</span>'+per.map(c=>`<span class="n">${c.work}</span>`).join('')+
+    '<span>Off</span>'+per.map(c=>`<span class="n">${c.off}</span>`).join('')+
+    '<span>Absent / suspended</span>'+per.map(c=>`<span class="n${c.risk?' red':''}">${c.risk}</span>`).join('');
+  const items=[], prev=D.prevRows||{}, byId={}; D.staff.forEach(s=>byId[s.id]=s);
+  people.forEach(p=>{ if(!prev[p.id]&&Object.keys(prev).length) items.push([`<b>${esc(p.name)}</b> joins ${esc(p.section)}`, p.startDate?'started '+dm(p.startDate):'' ]); });
+  Object.keys(prev).forEach(id=>{ if(!D.rows[id]) items.push([`<b>${esc((byId[id]||{}).name||'Someone')}</b> is no longer on the schedule`, (byId[id]&&byId[id].endDate)?'left '+dm(byId[id].endDate):'' ]); });
+  people.forEach(p=>{ const r=D.rows[p.id]; const days={};
+    r.cells.forEach((v,i)=>{ if(!isShift(v)){ const l=plain(v); (days[l]=days[l]||[]).push(DAYN[i]); } });
+    Object.keys(days).forEach(l=>items.push([`<b>${esc(p.name)}</b> · ${esc(l)}`, days[l].join(', ')]));
+    if(!isShift(r.next)) items.push([`<b>${esc(p.name)}</b> · ${esc(plain(r.next))}`,'next Monday']);
+  });
+  $('chg').innerHTML=items.length?items.map(([a,b])=>`<li>${a}${b?`<small>${esc(b)}</small>`:''}</li>`).join(''):'<li class="none">Everyone on usual shifts.</li>';
+}
+async function createWeek(mode){
+  setSync('busy','Setting up the week…');
+  try{ const r=await api('createWeek',{weekStart:WEEK,mode}); if(!r.ok) throw new Error(r.error); D=r; renderWeek(); toast(mode==='copy'?'Copied last week.':'Week set up with usual shifts.'); }
+  catch(e){ setSync('bad',e.message); toast(e.message); }
+}
+$('pubBtn').addEventListener('click',async()=>{
+  const b=$('pubBtn'); b.disabled=true; setSync('busy','Publishing…');
+  try{ const r=await api('publish',{weekStart:WEEK}); if(!r.ok) throw new Error(r.error); D=r; renderWeek(); toast('Week published. You can print it now.'); }
+  catch(e){ setSync('bad',e.message); b.disabled=false; }
+});
+
+/* ---------- cell editor ---------- */
+let POP=null;
+$('gridwrap').addEventListener('click',e=>{ const c=e.target.closest('.cell'); if(!c||!isEditor()) return; openPop(c); });
+function openPop(btn){
+  closePop(); POP={btn,id:btn.dataset.id,day:btn.dataset.day};
+  const p=D.staff.find(s=>s.id===POP.id)||{name:'',section:''}, r=D.rows[POP.id], cur=POP.day==='next'?r.next:r.cells[+POP.day];
+  const dayName=POP.day==='next'?'Next Monday':DAYN[+POP.day]+' '+dateOf(addDays(WEEK,+POP.day)).getDate();
+  const accts=SET.sections.filter(s=>s!==p.section&&s!=='Admin');
+  const opt=(v,l,hint)=>`<button class="opt${v===cur?' on':''}" data-v="${esc(v)}">${esc(l)}${hint?`<b>${esc(hint)}</b>`:''}</button>`;
+  const usual=POP.day==='5'?SET.defaultSaturday:SET.defaultWeekday;
+  const pop=$('pop');
+  pop.innerHTML=`<h4>${esc(dayName)} · ${esc(p.name)}</h4>`+
+    SET.shifts.map(s=>opt(s,shiftLabel(s),s===usual?'usual':'')).join('')+
+    `<div class="custom"><input type="time" id="cA" aria-label="Start time" value="07:00"><span>–</span><input type="time" id="cB" aria-label="End time" value="16:30"><button class="btn sm" id="cSet">Set</button></div><hr>`+
+    STATUS_ORDER.map(k=>opt(k,STATUS[k].label)).join('')+
+    (accts.length?`<hr><h4>Moved to account</h4>`+accts.map(a=>opt('ACCOUNT:'+a,a)).join(''):'')+
+    `<hr><button class="opt" data-resign style="color:var(--red)">Resigned…</button>`;
+  pop.hidden=false; btn.setAttribute('aria-expanded','true');
+  const rc=btn.getBoundingClientRect(); const ph=pop.offsetHeight, pw=pop.offsetWidth;
+  let top=rc.bottom+4; if(top+ph>innerHeight-8) top=Math.max(8,rc.top-ph-4);
+  pop.style.top=top+'px'; pop.style.left=Math.min(rc.left,innerWidth-pw-8)+'px';
+  (pop.querySelector('.opt.on')||pop.querySelector('.opt')).focus();
+}
+function closePop(){ const pop=$('pop'); if(POP&&POP.btn) POP.btn.setAttribute('aria-expanded','false'); pop.hidden=true; const b=POP&&POP.btn; POP=null; return b; }
+$('pop').addEventListener('click',e=>{
+  if(!POP) return;
+  const o=e.target.closest('.opt');
+  if(e.target.id==='cSet'){ const a=$('cA').value,b=$('cB').value; if(!a||!b||a>=b){toast('End time must be after start time.');return;} return setCell(a+'-'+b); }
+  if(e.target.closest('[data-resign]')){
+    const p=D.staff.find(s=>s.id===POP.id)||{}; const dn=POP.day==='next'?'next Monday':DAYN[+POP.day];
+    $('pop').innerHTML=`<div class="confirm"><p>Mark <b>${esc(p.name)}</b> as resigned from <b>${esc(dn)}</b>? They won't appear in later weeks.</p><button class="btn danger sm" id="rsYes">Mark resigned</button> <button class="btn sm" id="rsNo">Cancel</button></div>`;
+    $('rsNo').onclick=()=>{const b=closePop(); if(b) b.focus();}; $('rsYes').onclick=()=>setCell('RESIGNED'); $('rsNo').focus(); return;
+  }
+  if(o&&o.dataset.v) setCell(o.dataset.v);
+});
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&POP){ const b=closePop(); if(b) b.focus(); } });
+document.addEventListener('mousedown',e=>{ if(POP&&!e.target.closest('#pop')&&!e.target.closest('.cell')) closePop(); });
+window.addEventListener('resize',()=>closePop());
+async function setCell(v){
+  const {id,day}=POP; closePop();
+  const r=D.rows[id]; if(day==='next') r.next=v; else r.cells[+day]=v;
+  if(D.meta&&D.meta.status==='published'){ D.meta.status='draft'; }
+  renderWeek(); setSync('busy','Saving…');
+  const again=document.querySelector(`.cell[data-id="${CSS.escape(id)}"][data-day="${day}"]`); if(again) again.focus();
+  try{ const res=await api('saveCells',{weekStart:WEEK,changes:[{staffId:id,day,value:v}]}); if(!res.ok) throw new Error(res.error); D=res; renderWeek();
+    const f=document.querySelector(`.cell[data-id="${CSS.escape(id)}"][data-day="${day}"]`); if(f) f.focus(); }
+  catch(e){ setSync('bad','Not saved: '+e.message); toast('Not saved: '+e.message); }
+}
+
+/* ---------- print ---------- */
+$('printBtn').addEventListener('click',()=>{
+  const people=weekPeople(), secs=sectionsOf(people), m=D.meta||{};
+  const pub=m.status==='published';
+  const prep=pub?`Prepared by: ${esc(m.publishedBy)}<br>${esc(new Date(m.publishedAt).toLocaleString('en-AU',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric',hour:'numeric',minute:'2-digit'}))}<br>Published version ${m.version}`
+                :`<b>DRAFT, not published</b><br>Printed by ${esc(ME.name)}<br>${esc(new Date().toLocaleString('en-AU',{dateStyle:'medium',timeStyle:'short'}))}`;
+  let n=0, h=`<div class="top"><span class="logos"><img src="../assets/compliance-ph.png" alt=""><i></i><img src="../assets/aos.png" alt=""><i></i><img src="../assets/leads-direct.png" alt=""></span>
+    <div><h1>${esc(SET.title||'Weekly Schedule')}</h1><div class="sub">${esc(weekLabel().replace('Week of ',''))} · next week from Mon ${dateOf(addDays(WEEK,7)).getDate()} ${MON[dateOf(addDays(WEEK,7)).getMonth()]}</div></div>
+    <div class="prep">${prep}</div></div><table><thead><tr><th></th><th>Name (start)</th>`+DAYN.map((d,i)=>`<th>${d} ${dateOf(addDays(WEEK,i)).getDate()}</th>`).join('')+`<th class="next">${esc(fmtD(addDays(WEEK,7),{weekday:'short',day:'numeric'}))}</th></tr></thead><tbody>`;
+  secs.forEach(s=>{ h+=`<tr class="sec"><td colspan="9">${esc(s.name)}</td></tr>`;
+    s.people.forEach(p=>{ const r=D.rows[p.id]; n++;
+      h+=`<tr><td class="n">${n}</td><td class="nm">${esc(p.name)}${p.startDate?`<small>${esc(dm(p.startDate))}</small>`:''}</td>`+r.cells.map(v=>`<td>${printCell(v)}</td>`).join('')+`<td class="next">${printCell(r.next)}</td></tr>`; }); });
+  h+=`</tbody></table><div class="key"><span><b>Key:</b> grey = off &nbsp; outlined = absent / suspended &nbsp; dashed = moved to another role or account</span><span>People Hub Workstation</span></div>`;
+  $('print').innerHTML=h;
+  const imgs=[...$('print').querySelectorAll('img')]; Promise.all(imgs.map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r;}))).then(()=>window.print());
+});
+function printCell(v){ return cellHtml(v,false); }
+
+/* ---------- staff ---------- */
+async function loadStaff(){
+  $('v-staff').innerHTML='<p class="note">Loading staff…</p>';
+  try{ const r=await api('staffList'); if(!r.ok) throw new Error(r.error); STAFF=r.staff; renderStaff(); }
+  catch(e){ $('v-staff').innerHTML='<div class="err">'+esc(e.message)+'</div>'; }
+}
+function renderStaff(msg){
+  const act=STAFF.filter(s=>s.active), gone=STAFF.filter(s=>!s.active);
+  const secs=SET.sections.slice(); act.forEach(s=>{if(secs.indexOf(s.section)<0)secs.push(s.section);});
+  const secOpts=sel=>secs.map(s=>`<option${s===sel?' selected':''}>${esc(s)}</option>`).join('');
+  let h=`<h1>Staff</h1><p class="lede">Everyone who appears on the schedule. New people show up from the next week you set up.</p>
+   <h2>Add someone</h2><form class="addrow" id="sAdd">
+    <label class="f">Name<input type="text" id="sName" required></label>
+    <label class="f">Start date<input type="date" id="sStart"></label>
+    <label class="f">Section<select id="sSec">${secOpts(secs[0])}</select></label>
+    <label class="f" style="flex-direction:row;align-items:center;gap:6px;font-family:var(--sans);font-size:.87rem;color:var(--ink)"><input type="checkbox" id="sNew" checked> New hire</label>
+    <button class="btn primary" type="submit">Add</button>
+    <span style="margin-left:auto;display:flex;gap:6px;align-items:flex-end"><label class="f">New section<input type="text" id="secName" placeholder="e.g. Solar"></label><button class="btn" type="button" id="secAdd">Add section</button></span>
+   </form>${msg?`<p class="ok">${esc(msg)}</p>`:''}`;
+  secs.forEach(sec=>{ const ppl=act.filter(s=>s.section===sec).sort((a,b)=>a.order-b.order); if(!ppl.length) return;
+    h+=`<h2>${esc(sec)} <span style="font-family:var(--type);font-weight:400;color:var(--ink-3);font-size:.85rem">${ppl.length}</span></h2><table class="l"><thead><tr><th>Name</th><th>Start date</th><th>Section</th><th>New hire</th><th></th></tr></thead><tbody>`+
+    ppl.map(s=>`<tr data-id="${esc(s.id)}"><td><b>${esc(s.name)}</b></td><td><input type="date" value="${esc(s.startDate)}" data-f="startDate"></td><td><select data-f="section">${secOpts(s.section)}</select></td><td><input type="checkbox" data-f="isNew"${s.isNew?' checked':''} aria-label="New hire"></td><td style="text-align:right"><button class="btn sm danger" data-rm>Remove</button></td></tr>`).join('')+'</tbody></table>'; });
+  if(gone.length) h+=`<h2>Former staff</h2><table class="l"><tbody>`+gone.map(s=>`<tr data-id="${esc(s.id)}"><td class="muted">${esc(s.name)}</td><td class="t muted">${s.endDate?'left '+esc(s.endDate):''}</td><td style="text-align:right"><button class="btn sm" data-restore>Restore</button></td></tr>`).join('')+'</tbody></table>';
+  $('v-staff').innerHTML=h;
+  $('sAdd').onsubmit=async e=>{ e.preventDefault(); const name=$('sName').value.trim(); if(!name) return;
+    const r=await api('staffAdd',{name,startDate:$('sStart').value,section:$('sSec').value,isNew:$('sNew').checked}); if(!r.ok) return toast(r.error); STAFF=r.staff; renderStaff(name+' added.'); };
+  $('secAdd').onclick=async()=>{ const n=$('secName').value.trim(); if(!n) return; const r=await api('sectionAdd',{name:n}); if(!r.ok) return toast(r.error); SET=r.settings; renderStaff('Section "'+n+'" added.'); };
+  $('v-staff').querySelectorAll('tr[data-id]').forEach(tr=>{
+    const id=tr.dataset.id;
+    tr.querySelectorAll('[data-f]').forEach(inp=>inp.onchange=async()=>{ const v=inp.type==='checkbox'?inp.checked:inp.value; const r=await api('staffUpdate',{id,[inp.dataset.f]:v}); if(!r.ok) return toast(r.error); STAFF=r.staff; toast('Saved.'); if(inp.dataset.f==='section') renderStaff(); });
+    const rm=tr.querySelector('[data-rm]'); if(rm) rm.onclick=()=>{ const name=tr.querySelector('b').textContent; rm.parentElement.innerHTML=`<span style="font-size:.85rem">Remove ${esc(name)}? </span><button class="btn sm danger" data-yes>Remove</button> <button class="btn sm" data-no>Keep</button>`;
+      tr.querySelector('[data-no]').onclick=()=>renderStaff(); tr.querySelector('[data-yes]').onclick=async()=>{ const r=await api('staffUpdate',{id,active:false,endDate:isoOf(new Date())}); if(!r.ok) return toast(r.error); STAFF=r.staff; renderStaff(name+' moved to former staff.'); }; };
+    const rs=tr.querySelector('[data-restore]'); if(rs) rs.onclick=async()=>{ const r=await api('staffUpdate',{id,active:true,endDate:''}); if(!r.ok) return toast(r.error); STAFF=r.staff; renderStaff('Restored.'); };
+  });
+}
+
+/* ---------- users ---------- */
+async function loadUsers(){
+  $('v-users').innerHTML='<p class="note">Loading accounts…</p>';
+  try{ const r=await api('usersList'); if(!r.ok) throw new Error(r.error); USERS=r.users; renderUsers(); }
+  catch(e){ $('v-users').innerHTML='<div class="err">'+esc(e.message)+'</div>'; }
+}
+const ROLE_NOTE={management:'Edit everything, manage accounts',admin:'Edit schedule and staff, manage accounts',agent:'View the schedule only'};
+function renderUsers(msg){
+  const ro=sel=>['management','admin','agent'].map(r=>`<option value="${r}"${r===sel?' selected':''}>${r[0].toUpperCase()+r.slice(1)}</option>`).join('');
+  let h=`<h1>Users</h1><p class="lede">Each person signs in with their own account. Give them the temporary password in person; they can change it under My account.</p>
+   <h2>Add an account</h2><form class="addrow" id="uAdd">
+    <label class="f">Full name<input type="text" id="uName" required></label>
+    <label class="f">Username<input type="text" id="uUser" required autocapitalize="none" spellcheck="false" placeholder="e.g. bernadith"></label>
+    <label class="f">Role<select id="uRole">${ro('agent')}</select></label>
+    <label class="f">Temporary password<input type="text" id="uPw" required minlength="8" autocomplete="off"></label>
+    <button class="btn primary" type="submit">Add account</button></form>${msg?`<p class="ok">${esc(msg)}</p>`:''}
+   <h2>Accounts</h2><table class="l"><thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th></th></tr></thead><tbody>`+
+   USERS.map(u=>`<tr data-u="${esc(u.username)}"><td><b>${esc(u.name)}</b>${u.username===ME.username?' <span class="muted">(you)</span>':''}</td><td class="t">${esc(u.username)}</td>
+     <td><select data-role${u.username===ME.username?' disabled':''} aria-label="Role">${ro(u.role)}</select> <span class="note" style="display:inline">${esc(ROLE_NOTE[u.role])}</span></td>
+     <td>${u.active?'Active':'<span class="muted">Disabled</span>'}</td>
+     <td style="text-align:right;white-space:nowrap">${u.username===ME.username?'':`<button class="btn sm" data-pw>Reset password</button> <button class="btn sm${u.active?' danger':''}" data-act>${u.active?'Disable':'Enable'}</button>`}</td></tr>`).join('')+'</tbody></table>';
+  $('v-users').innerHTML=h;
+  $('uAdd').onsubmit=async e=>{ e.preventDefault(); const r=await api('userAdd',{name:$('uName').value.trim(),username:$('uUser').value.trim(),role:$('uRole').value,password:$('uPw').value}); if(!r.ok) return toast(r.error); USERS=r.users; renderUsers('Account added. Give them their username and temporary password.'); };
+  $('v-users').querySelectorAll('tr[data-u]').forEach(tr=>{ const username=tr.dataset.u;
+    const sel=tr.querySelector('[data-role]'); sel.onchange=async()=>{ const r=await api('userUpdate',{username,role:sel.value}); if(!r.ok){toast(r.error);return renderUsers();} USERS=r.users; renderUsers('Role updated.'); };
+    const pw=tr.querySelector('[data-pw]'); if(pw) pw.onclick=()=>{ pw.parentElement.innerHTML=`<input type="text" data-np placeholder="New temporary password" style="width:190px" autocomplete="off"> <button class="btn sm primary" data-ok>Set</button> <button class="btn sm" data-no>Cancel</button>`;
+      tr.querySelector('[data-np]').focus(); tr.querySelector('[data-no]').onclick=()=>renderUsers();
+      tr.querySelector('[data-ok]').onclick=async()=>{ const r=await api('userUpdate',{username,password:tr.querySelector('[data-np]').value}); if(!r.ok) return toast(r.error); USERS=r.users; renderUsers('Password reset. Give them the new temporary password.'); }; };
+    const ac=tr.querySelector('[data-act]'); if(ac) ac.onclick=async()=>{ const u=USERS.find(x=>x.username===username); const r=await api('userUpdate',{username,active:!u.active}); if(!r.ok) return toast(r.error); USERS=r.users; renderUsers(u.active?'Account disabled.':'Account enabled.'); };
+  });
+}
+
+/* ---------- my account ---------- */
+function renderAccount(msg){
+  $('v-account').innerHTML=`<h1>My account</h1><p class="lede">${esc(ME.name)} · <span style="font-family:var(--type)">${esc(ME.username)}</span> · ${esc(ME.role)}</p>
+   <h2>Change password</h2><form class="addrow" id="pwForm">
+    <label class="f">Current password<input type="password" id="pCur" autocomplete="current-password" required></label>
+    <label class="f">New password<input type="password" id="pNew" autocomplete="new-password" minlength="8" required></label>
+    <button class="btn primary" type="submit">Change password</button></form>${msg?`<p class="ok">${esc(msg)}</p>`:''}<div id="pErr"></div>`;
+  $('pwForm').onsubmit=async e=>{ e.preventDefault(); const r=await api('changePassword',{current:$('pCur').value,password:$('pNew').value}); if(!r.ok){ $('pErr').innerHTML='<div class="err">'+esc(r.error)+'</div>'; return; } renderAccount('Password changed.'); };
+}
+
+boot();
+</script>
+</body>
+</html>

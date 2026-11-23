@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Page not found</title>
+<link rel="icon" href="/assets/compliance-ph.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0E2540;--ink-soft:#4A5A6E;--ink-faint:#7B8899;--surface:#F4F6FA;--card:#FFF;
+        --line:#E1E7EF;--blue:#1273C7;--blue-deep:#0B4E8A;--blue-tint:#E6F1FB}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--surface);
+       display:flex;align-items:center;justify-content:center;padding:24px;line-height:1.55}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:34px;max-width:460px;
+       box-shadow:0 1px 2px rgba(14,37,64,.04),0 12px 34px -16px rgba(14,37,64,.25)}
+  img{height:34px;margin-bottom:18px;display:block}
+  .code{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:.14em;color:var(--blue-deep)}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.55rem;letter-spacing:-.02em;margin:8px 0 0}
+  p{color:var(--ink-soft);margin-top:12px;font-size:.94rem}
+  .path{font-family:'IBM Plex Mono',monospace;font-size:.82rem;background:var(--blue-tint);color:var(--blue-deep);
+        padding:8px 11px;border-radius:8px;margin-top:14px;word-break:break-all}
+  a.btn{display:inline-block;margin-top:20px;background:var(--blue);color:#fff;text-decoration:none;
+        font-weight:600;font-size:.92rem;padding:11px 20px;border-radius:10px}
+  a.btn:hover{background:var(--blue-deep)}
+  .hint{font-size:.8rem;color:var(--ink-faint);margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+</style>
+</head>
+<body>
+  <div class="box">
+    <img src="/assets/compliance-ph.png" alt="Compliance PH Inc.">
+    <div class="code">ERROR 404</div>
+    <h1>That page isn't here</h1>
+    <p>The address below doesn't match anything on this site.</p>
+    <div class="path" id="path"></div>
+    <a class="btn" href="/">Go to the hub</a>
+    <div class="hint"><b>Staff note:</b> if a page that should exist is landing here, the folder for it probably didn't upload. Re-deploy the full site folder.</div>
+  </div>
+<script>document.getElementById('path').textContent = location.pathname + location.search;</script>
+</body>
+</html>

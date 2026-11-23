@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Typing Test — Compliance PH Inc.</title>
+<link rel="icon" href="../assets/compliance-ph.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E2540; --ink-soft:#4A5A6E; --ink-faint:#7B8899;
+    --surface:#F4F6FA; --card:#FFF; --line:#E1E7EF; --line-soft:#EDF1F7;
+    --blue:#1273C7; --blue-deep:#0B4E8A; --blue-tint:#E6F1FB;
+    --green:#0A7D43; --green-tint:#E3F3E9;
+    --amber:#B7791F; --red:#B23A3F; --red-tint:#F8E9E9;
+    --shadow:0 1px 2px rgba(14,37,64,.04), 0 10px 30px -14px rgba(14,37,64,.2);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--surface);line-height:1.55;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100%}
+  .wrap{flex:1;width:100%;max-width:760px;margin:0 auto;padding:26px 20px 60px;display:flex;flex-direction:column}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem}
+  .blogo{height:30px;width:auto;display:block}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:30px;animation:rise .3s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media(prefers-reduced-motion:reduce){.card{animation:none}}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-deep)}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.7rem;letter-spacing:-.02em;line-height:1.15;margin:8px 0 0}
+  h2{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.2rem;letter-spacing:-.01em}
+  p.lead{color:var(--ink-soft);margin-top:12px}
+  .muted{color:var(--ink-faint);font-size:.85rem}
+  label.field{display:block;margin-top:16px}
+  label.field span{display:block;font-size:.85rem;font-weight:500;margin-bottom:6px}
+  input,select{width:100%;font:inherit;font-size:.95rem;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-tint)}
+  .btn{font:inherit;font-weight:600;font-size:.95rem;border:none;border-radius:11px;padding:13px 20px;cursor:pointer;width:100%;margin-top:22px}
+  .btn-primary{background:var(--blue);color:#fff}
+  .btn-primary:hover{background:var(--blue-deep)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .rules{margin:20px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:16px 0}
+  .rules ul{list-style:none;display:grid;gap:8px}
+  .rules li{display:flex;gap:10px;font-size:.9rem;color:var(--ink-soft)}
+  .rules li::before{content:"";flex:0 0 6px;height:6px;margin-top:8px;border-radius:2px;background:var(--blue)}
+
+  .statbar{display:flex;gap:10px;margin-bottom:16px}
+  .stat{flex:1;background:var(--line-soft);border-radius:11px;padding:11px 12px;text-align:center}
+  .stat .n{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.4rem;line-height:1.1}
+  .stat .l{font-size:.68rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
+  .bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-bottom:20px}
+  .fill{height:100%;width:100%;background:var(--blue);transition:width 1s linear, background .4s}
+
+  .target{font-family:'IBM Plex Mono',monospace;font-size:1.02rem;line-height:1.9;background:var(--line-soft);
+          border-radius:12px;padding:18px;color:var(--ink-faint);user-select:none;-webkit-user-select:none}
+  .target b{font-weight:400;color:var(--green);background:var(--green-tint);border-radius:2px}
+  .target .bad{color:#fff;background:var(--red);border-radius:2px}
+  .target .cur{border-left:2px solid var(--blue);margin-left:-2px;animation:blink 1s step-end infinite}
+  @keyframes blink{50%{border-color:transparent}}
+  textarea{width:100%;font-family:'IBM Plex Mono',monospace;font-size:1rem;line-height:1.7;padding:14px;
+           border:1px solid var(--line);border-radius:12px;min-height:130px;resize:none;margin-top:14px;color:var(--ink)}
+  .done-mark{width:54px;height:54px;border-radius:50%;background:var(--blue-tint);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+  .done-mark svg{width:26px;height:26px;stroke:var(--blue-deep);stroke-width:2.4;fill:none}
+  .note{font-size:.78rem;color:var(--ink-faint);margin-top:16px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <a class="brand" href="../"><img class="blogo" src="../assets/compliance-ph.png" alt=""><span>Compliance PH Inc.</span></a>
+  </div>
+  <div id="app"></div>
+  <div class="note" id="footNote"></div>
+</div>
+
+<script src="/config.js"></script>
+<script>
+/* ============================================================
+   CONFIG — edit these, then save
+   ============================================================ */
+const CONFIG = {
+  seconds: 60,              // length of the test
+  strongWpm: 45,            // >= this = Interview
+  reviewWpm: 35,            // >= this = Review; below = Below bar
+  minAccuracy: 90,          // accuracy below this adds a flag, however fast they type
+  showLiveStats: true,      // false = hide WPM/accuracy while typing (they never see the verdict either way)
+
+  // PASTE your People Hub API URL here (the Apps Script /exec URL)
+  apiEndpoint: (window.PH_CONFIG&&window.PH_CONFIG.apiUrl)||"",
+  submitToken: "ph-hub-submit-key",   // must match SUBMIT_TOKEN in the People Hub API script
+
+  roles: ["Customer Service Representative","Quality Assurance Specialist",
+          "Administrative Assistant","2EZi / Buy't account","Other / not sure"],
+
+  // One is picked at random each time, so applicants can't pre-practise a single passage.
+  passages: [
+    "Good morning. Please find attached the updated schedule for this week. I have confirmed the Thursday meeting at ten and moved the budget review to Friday afternoon. Let me know if you would like any changes and I will send the final agenda before the end of the day.",
+    "Thank you for contacting our support team. I have reviewed your account and can see the duplicate charge from March third. I have processed a refund for the extra payment, and it should appear on your statement within three to five business days. Please let me know if you need anything else.",
+    "The report for last quarter is now complete. Total calls handled increased by twelve percent, while the average handling time dropped slightly. Customer satisfaction remained steady at ninety one percent. I have highlighted the three accounts that need attention and attached the full breakdown for your review.",
+    "Please note that the office will be closed on Monday for the public holiday. Any requests received over the weekend will be answered on Tuesday morning. If your matter is urgent, contact the duty supervisor on the number listed below and someone will assist you as soon as possible."
+  ]
+};
+
+/* ============================================================ */
+const app=document.getElementById('app');
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KIOSK=new URLSearchParams(location.search).get('kiosk')==='1';
+document.getElementById('footNote').textContent = CONFIG.apiEndpoint
+  ? 'Your result is sent securely to our hiring team.'
+  : 'Setup note: paste your People Hub API URL into CONFIG.apiEndpoint before going live.';
+
+let S={name:'',email:'',phone:'',role:'',passage:'',wpm:0,accuracy:100,errors:0,typed:0,elapsed:0};
+
+async function send(rec){
+  if(!CONFIG.apiEndpoint){ console.warn('No apiEndpoint set — not saved.'); return; }
+  try{
+    await fetch(CONFIG.apiEndpoint,{method:'POST',mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(rec)});
+  }catch(e){ console.error('Submit failed:',e); }
+}
+
+/* ---------- intro ---------- */
+function renderIntro(){
+  app.innerHTML=`
+  <div class="card">
+    <div class="eyebrow">Assessment</div>
+    <h1>Typing Speed Test</h1>
+    <p class="lead">This takes ${CONFIG.seconds} seconds. You'll type a short business passage exactly as it appears — we measure both speed and accuracy.</p>
+    <div class="rules"><ul>
+      <li>The timer starts the moment you type your first character</li>
+      <li>Type the text exactly, including punctuation and capital letters</li>
+      <li>Pasting is disabled, and the passage is chosen at random</li>
+      <li>Accuracy counts as much as speed — don't rush past mistakes</li>
+    </ul></div>
+    <label class="field"><span>Full name</span><input id="n" type="text" autocomplete="name" placeholder="Juan Dela Cruz"></label>
+    <label class="field"><span>Email</span><input id="e" type="email" autocomplete="email" placeholder="you@email.com"></label>
+    <label class="field"><span>Mobile number</span><input id="p" type="tel" autocomplete="tel" placeholder="09xx xxx xxxx"></label>
+    <label class="field"><span>Role you're applying for</span>
+      <select id="r">${CONFIG.roles.map(r=>`<option>${esc(r)}</option>`).join('')}</select></label>
+    <button class="btn btn-primary" id="go" disabled>Start typing test</button>
+  </div>`;
+  const n=document.getElementById('n'),e=document.getElementById('e'),p=document.getElementById('p'),b=document.getElementById('go');
+  const chk=()=>{b.disabled=!(n.value.trim()&&e.value.trim()&&p.value.trim());};
+  [n,e,p].forEach(x=>x.addEventListener('input',chk));
+  b.addEventListener('click',()=>{
+    S.name=n.value.trim(); S.email=e.value.trim(); S.phone=p.value.trim(); S.role=document.getElementById('r').value;
+    S.passage=CONFIG.passages[Math.floor(Math.random()*CONFIG.passages.length)];
+    renderTest();
+  });
+}
+
+/* ---------- the test ---------- */
+function renderTest(){
+  const target=S.passage;
+  app.innerHTML=`
+  <div class="card">
+    <div class="eyebrow">Typing test</div>
+    <h2 style="margin-top:6px">Type the passage below</h2>
+    <div class="statbar" style="margin-top:16px">
+      <div class="stat"><div class="n" id="wpm">${CONFIG.showLiveStats?'0':'—'}</div><div class="l">WPM</div></div>
+      <div class="stat"><div class="n" id="acc">${CONFIG.showLiveStats?'100%':'—'}</div><div class="l">Accuracy</div></div>
+      <div class="stat"><div class="n" id="left">${CONFIG.seconds}</div><div class="l">Seconds left</div></div>
+    </div>
+    <div class="bar"><div class="fill" id="fill"></div></div>
+    <div class="target" id="tgt"></div>
+    <textarea id="ta" placeholder="Start typing here — the timer begins with your first keystroke…"
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    <button class="btn btn-primary" id="fin" disabled>I'm finished</button>
+  </div>`;
+  const ta=document.getElementById('ta'), tgt=document.getElementById('tgt'), fill=document.getElementById('fill');
+  let started=false, startTs=0, tick=null, left=CONFIG.seconds, ended=false;
+
+  const paint=()=>{
+    const t=ta.value; let h='';
+    for(let i=0;i<target.length;i++){
+      const ch=esc(target[i]);
+      if(i<t.length) h += (t[i]===target[i]) ? `<b>${ch}</b>` : `<span class="bad">${ch}</span>`;
+      else if(i===t.length) h += `<span class="cur">${ch}</span>`;
+      else h += ch;
+    }
+    tgt.innerHTML=h;
+  };
+  const calc=()=>{
+    const t=ta.value; let ok=0;
+    for(let i=0;i<t.length;i++) if(t[i]===target[i]) ok++;
+    const elapsed=started?Math.max(0.5,(Date.now()-startTs)/1000):0.5;
+    const wpm=Math.max(0,Math.round((ok/5)/(elapsed/60)));
+    const acc=t.length?Math.round(ok/t.length*100):100;
+    return {wpm,acc,ok,typed:t.length,elapsed:Math.round(elapsed)};
+  };
+  const show=()=>{
+    if(!CONFIG.showLiveStats) return;
+    const c=calc();
+    document.getElementById('wpm').textContent=c.wpm;
+    document.getElementById('acc').textContent=c.acc+'%';
+  };
+  const finish=()=>{
+    if(ended) return; ended=true;
+    if(tick) clearInterval(tick);
+    ta.disabled=true;
+    const c=calc();
+    S.wpm=c.wpm; S.accuracy=c.acc; S.errors=c.typed-c.ok; S.typed=c.typed; S.elapsed=c.elapsed;
+    submit();
+  };
+  paint();
+  ta.addEventListener('paste',e=>e.preventDefault());
+  ta.addEventListener('drop',e=>e.preventDefault());
+  ta.addEventListener('input',()=>{
+    if(!started){
+      started=true; startTs=Date.now();
+      tick=setInterval(()=>{
+        left--; document.getElementById('left').textContent=Math.max(0,left);
+        const pct=Math.max(0,left/CONFIG.seconds*100); fill.style.width=pct+'%';
+        fill.style.background = pct<15?'var(--red)':pct<35?'var(--amber)':'var(--blue)';
+        show();
+        if(left<=0) finish();
+      },1000);
+    }
+    paint(); show();
+    document.getElementById('fin').disabled=false;
+    if(ta.value.length>=target.length) finish();
+  });
+  document.getElementById('fin').addEventListener('click',finish);
+  ta.focus();
+}
+
+/* ---------- submit ---------- */
+function submit(){
+  const flags=[];
+  if(S.wpm<CONFIG.reviewWpm) flags.push({level:'soft',text:'Low typing speed ('+S.wpm+' WPM)'});
+  if(S.accuracy<CONFIG.minAccuracy) flags.push({level:'soft',text:'Low typing accuracy ('+S.accuracy+'%)'});
+  let band='below';
+  if(S.wpm>=CONFIG.strongWpm) band='strong'; else if(S.wpm>=CONFIG.reviewWpm) band='review';
+  if(band==='strong' && S.accuracy<CONFIG.minAccuracy) band='review';   // fast but sloppy isn't a pass
+  const rec={
+    token:CONFIG.submitToken, exam:'typing', role:'Typing Test',
+    name:S.name, email:S.email, phone:S.phone,
+    score:S.wpm, correct:'', total:'', band:band,
+    recommendation:{strong:'Interview',review:'Review',below:'Below bar'}[band],
+    timedOut:false, durationSec:S.elapsed, byType:{},
+    typing:{wpm:S.wpm, accuracy:S.accuracy, errors:S.errors, typed:S.typed},
+    fit:{'Role applied for':S.role}, flags:flags, answers:[]
+  };
+  renderDone();
+  send(rec);
+}
+function renderDone(){
+  app.innerHTML=`
+  <div class="card" style="text-align:center">
+    <div class="done-mark"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+    <h2>Thanks, ${esc((S.name||'').split(' ')[0]||'there')} — that's recorded</h2>
+    <p class="lead" style="margin-top:8px">Your typing result has been sent to our hiring team.</p>
+    <p class="muted" style="margin-top:16px">${KIOSK?'Please hand the computer back to our staff.':'You can close this window now.'}</p>
+  </div>`;
+  if(KIOSK) setTimeout(()=>{location.href='../kiosk/';},8000);
+}
+
+renderIntro();
+</script>
+</body>
+</html>

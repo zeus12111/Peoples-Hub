@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Virtual Assistant Screening</title>
+<link rel="icon" href="../assets/compliance-ph.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E2540; --ink-soft:#4A5A6E; --ink-faint:#7B8899;
+    --surface:#F4F6FA; --card:#FFFFFF; --line:#E1E7EF; --line-soft:#EDF1F7;
+    --teal:#1273C7; --teal-deep:#0B4E8A; --teal-tint:#E6F1FB;
+    --amber:#B7791F; --red:#B23A3F; --red-tint:#F8E9E9;
+    --shadow:0 1px 2px rgba(14,37,64,.04), 0 8px 28px -12px rgba(14,37,64,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--surface);line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100%}
+  .wrap{flex:1;width:100%;max-width:660px;margin:0 auto;padding:28px 20px 64px;display:flex;flex-direction:column}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+  .brand{text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-.01em;font-size:1.05rem}
+  .blogo{height:30px;width:auto;display:block}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:30px;animation:rise .35s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.card{animation:none}}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-deep)}
+  h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.6rem;letter-spacing:-.02em;line-height:1.14;margin:8px 0 0}
+  h2{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.18rem;letter-spacing:-.01em;margin-bottom:4px}
+  p.lead{color:var(--ink-soft);margin-top:12px}
+  .muted{color:var(--ink-faint);font-size:.85rem}
+  .preview{margin:22px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:18px 0}
+  .preview-title{font-size:.8rem;font-weight:600;color:var(--ink-soft);margin-bottom:10px}
+  .preview ul{list-style:none;display:grid;gap:9px}
+  .preview li{display:flex;gap:10px;font-size:.9rem;color:var(--ink-soft)}
+  .preview li::before{content:"";flex:0 0 6px;height:6px;margin-top:8px;border-radius:2px;background:var(--teal)}
+  label.field{display:block;margin-top:16px}
+  label.field span{display:block;font-size:.85rem;font-weight:500;color:var(--ink);margin-bottom:6px}
+  input[type=text],input[type=email],input[type=tel]{width:100%;font:inherit;font-size:.95rem;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);transition:border-color .15s, box-shadow .15s}
+  input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-tint)}
+  .btn{font:inherit;font-weight:600;font-size:.95rem;border:none;border-radius:11px;padding:13px 20px;cursor:pointer;transition:transform .08s, background .15s;width:100%;margin-top:24px}
+  .btn-primary{background:var(--teal);color:#fff}
+  .btn-primary:hover{background:var(--teal-deep)}
+  .btn-primary:active{transform:translateY(1px)}
+  .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink);margin-top:10px}
+  .btn-ghost:hover{background:var(--line-soft)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn:focus-visible{outline:3px solid var(--teal-tint);outline-offset:2px}
+  .steps{display:flex;gap:6px;margin-bottom:20px}
+  .steps .seg{flex:1;height:5px;border-radius:3px;background:var(--line)}
+  .steps .seg.done{background:var(--teal)}
+  .steps .seg.active{background:var(--teal);opacity:.45}
+  .timer-wrap{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .timer-label{font-size:.8rem;color:var(--ink-faint)}
+  .timer-val{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.05rem;color:var(--ink)}
+  .timer-bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-bottom:24px}
+  .timer-fill{height:100%;width:100%;background:var(--teal);transition:width 1s linear, background .4s}
+  .qcount{font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--ink-faint);margin-bottom:6px}
+  .qtext{font-size:1.06rem;font-weight:500;line-height:1.4;margin-bottom:4px}
+  .passage{background:var(--line-soft);border-radius:11px;padding:14px 16px;font-size:.92rem;color:var(--ink-soft);margin:14px 0;white-space:pre-line}
+  .options{display:grid;gap:10px;margin-top:18px}
+  .opt{display:flex;align-items:flex-start;gap:11px;border:1px solid var(--line);border-radius:11px;padding:13px 15px;cursor:pointer;font-size:.94rem;transition:border-color .12s, background .12s}
+  .opt:hover{border-color:var(--teal);background:var(--teal-tint)}
+  .opt input{margin-top:2px;accent-color:var(--teal);flex:0 0 auto}
+  .opt.sel{border-color:var(--teal);background:var(--teal-tint)}
+  .navrow{display:flex;gap:10px;margin-top:26px}
+  .navrow .btn{margin-top:0}
+  .navrow .btn-ghost{flex:0 0 auto;width:auto;padding:13px 18px}
+  .navrow .btn-primary{flex:1}
+  .done-mark{width:54px;height:54px;border-radius:50%;background:var(--teal-tint);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+  .done-mark svg{width:26px;height:26px;stroke:var(--teal-deep);stroke-width:2.4;fill:none}
+  .note{font-size:.78rem;color:var(--ink-faint);margin-top:18px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar"><a class="brand" href="../" title="Back to hub"><img class="blogo" src="../assets/compliance-ph.png" alt="Compliance PH Inc."><span id="brandName">Compliance PH Inc.</span></a></div>
+  <div id="app"></div>
+  <div class="note" id="footNote"></div>
+</div>
+
+<script src="/config.js"></script>
+<script>
+/* ============================================================
+   CONFIG  —  edit these, then save the file
+   ============================================================ */
+const CONFIG = {
+  companyName: "Compliance PH Inc.",
+  roleTitle: "Virtual Assistant",
+  timeLimitSeconds: 1200,         // 20 minutes for 30 questions
+  numQuestions: 30,               // sampled from the BANK below (bank has 35)
+
+  // Set once in /config.js — no need to edit this line.
+  apiEndpoint: (window.PH_CONFIG&&window.PH_CONFIG.apiUrl)||"",
+  submitToken: "ph-hub-submit-key",   // must match SUBMIT_TOKEN in the People Hub API script
+
+  // Score thresholds that map to VA levels (global-standard tiers).
+  level3Threshold: 85,            // 85%+  -> Level 3 (Advanced VA / OBM)
+  level2Threshold: 70,            // 70-84 -> Level 2 (Specialist VA)
+  level1Threshold: 55,            // 55-69 -> Level 1 (General/Admin VA); below -> not yet ready
+
+  jobPreview: [
+    "Supporting Australian businesses during Australian business hours (early start)",
+    "Admin, inbox and calendar management, data, and task coordination",
+    "Everyday tools: MS Office, Google Workspace, PM & comms apps, and AI tools",
+    "Clear written English, strong organisation, and reliable independent judgment"
+  ]
+};
+
+/* ============================================================
+   QUESTION BANK  (correct option marked c:true)
+   types: admin | tools | comms | org | autonomy
+   Difficulty rises across the bank; autonomy/org items are what
+   separate a Level 1 generalist from a Level 3 VA / OBM.
+   ============================================================ */
+const BANK = [
+  /* ---- Core admin & data ---- */
+  {type:'admin', q:'A client asks you to "block out" 2–3 PM on their calendar daily for focused work. You should create:', o:[{t:'A recurring daily calendar event from 2–3 PM marked as busy',c:true},{t:'A single one-off event today'},{t:'A reminder with no time'},{t:'A shared document'}]},
+  {type:'admin', q:'In a spreadsheet, the fastest way to remove duplicate rows from a contact list is:', o:[{t:'Use the Remove Duplicates feature',c:true},{t:'Delete them one by one by eye'},{t:'Sort the list and hope they disappear'},{t:'Re-type the whole list'}]},
+  {type:'admin', q:'A client sends 60 receipts to be logged. The most reliable approach is:', o:[{t:'Enter them into a structured spreadsheet with consistent columns (date, vendor, amount, category)',c:true},{t:'Keep them in your head'},{t:'Reply to each email saying "received"'},{t:'Put the totals only, no detail'}]},
+  {type:'admin', q:'When naming files for a client, the best practice is:', o:[{t:'A consistent, descriptive convention, e.g. 2026-03_Invoice_AcmeCo.pdf',c:true},{t:'Whatever name the file already had'},{t:'final.pdf, final2.pdf, finalfinal.pdf'},{t:'Random numbers'}]},
+  {type:'admin', q:'A meeting needs to suit people in Manila and Sydney. The reliable way to avoid a mix-up is:', o:[{t:'Confirm the time in both time zones and send a calendar invite that adjusts automatically',c:true},{t:'Just pick a time and hope it works'},{t:'Assume both cities share a time zone'},{t:'Ask them to figure it out'}]},
+  {type:'admin', q:'You’re asked to "triage" the client’s inbox each morning. That means:', o:[{t:'Sort and prioritise emails — flag urgent, handle routine, escalate what needs the client',c:true},{t:'Delete everything older than a day'},{t:'Reply to every email with the same template'},{t:'Mark all as read without reading'}]},
+
+  /* ---- Software & tools breadth ---- */
+  {type:'tools', q:'Which tool is designed for tracking tasks and projects across a team?', o:[{t:'Asana (or Trello / ClickUp / Monday)',c:true},{t:'Notepad'},{t:'Paint'},{t:'A calculator'}]},
+  {type:'tools', q:'A client uses Slack. To get one teammate’s attention in a busy channel, you:', o:[{t:'Mention them directly with @name',c:true},{t:'Post and hope they scroll back'},{t:'Email them instead'},{t:'Change the channel topic'}]},
+  {type:'tools', q:'In Google Sheets, =VLOOKUP is used to:', o:[{t:'Find a value in a table and return a related value from the same row',c:true},{t:'Count blank cells'},{t:'Merge two documents'},{t:'Send an email'}]},
+  {type:'tools', q:'The safest way to share a password with a client or teammate is:', o:[{t:'A password manager’s secure share (e.g. 1Password, Bitwarden, LastPass)',c:true},{t:'In a public Slack channel'},{t:'In the subject line of an email'},{t:'On a sticky note photo'}]},
+  {type:'tools', q:'A client asks you to use ChatGPT to draft replies. Good practice is to:', o:[{t:'Use it to draft, then review and edit for accuracy and the client’s voice before sending',c:true},{t:'Send its output directly without reading'},{t:'Paste in confidential client data for any task'},{t:'Refuse to use any AI tool'}]},
+  {type:'tools', q:'To schedule social media posts in advance across platforms, a VA would use:', o:[{t:'A scheduler like Meta Business Suite, Buffer or Hootsuite',c:true},{t:'A word processor'},{t:'A spreadsheet only'},{t:'The phone’s alarm clock'}]},
+  {type:'tools', q:'A CRM (e.g. HubSpot, Salesforce, Zoho) is mainly used to:', o:[{t:'Manage contacts, leads and the sales/customer pipeline',c:true},{t:'Edit photos'},{t:'Host video calls'},{t:'Write code'}]},
+  {type:'tools', q:'To combine data from two spreadsheets that share a common ID column, the cleanest method is:', o:[{t:'A lookup/merge (VLOOKUP, XLOOKUP, or a join) on the shared ID',c:true},{t:'Copy-paste rows at random'},{t:'Retype everything by hand'},{t:'Screenshot one into the other'}]},
+
+  /* ---- Communication & written English ---- */
+  {type:'comms', q:'Choose the most professional email opening to a new client:', o:[{t:'Hi James, thanks for getting in touch — happy to help with this.',c:true},{t:'hey james'},{t:'YO!'},{t:'To whom it may concern, greetings of the day'}]},
+  {type:'comms', q:'Choose the correctly written sentence.', o:[{t:'I’ve attached the report and will follow up on Monday.',c:true},{t:'I’ve attach the report and will followed up on Monday.'},{t:'I has attached the report and will follows up on Monday.'},{t:'I attaching the report and will follow up in Monday.'}]},
+  {type:'comms', q:'A client’s customer emails angrily about a late delivery. Your reply should first:', o:[{t:'Acknowledge the issue and apologise for the inconvenience, then explain the next step',c:true},{t:'Blame the courier'},{t:'Ignore the tone and send a generic line'},{t:'Tell them it’s not your problem'}]},
+  {type:'comms', q:'You need to tell a client a task will be late. The best approach is:', o:[{t:'Tell them early, explain why, and give a realistic new deadline',c:true},{t:'Say nothing and hope they don’t notice'},{t:'Tell them the day it’s already due'},{t:'Blame your internet without detail'}]},
+  {type:'comms', q:'Which is the clearest way to confirm you understood an instruction?', o:[{t:'Briefly restate the task and deadline back to the client before starting',c:true},{t:'Just say "ok"'},{t:'Say nothing and start'},{t:'Ask them to repeat everything three times'}]},
+  {type:'comms', q:'Choose the correct word: "Please ___ the file before the call."', o:[{t:'review',c:true},{t:'revue'},{t:'reveiw'},{t:'reviewing'}]},
+  {type:'comms', q:'A client writes in shorthand: "pls send the deck b4 cob." The professional reading is:', o:[{t:'Please send the presentation before close of business',c:true},{t:'Please send the deck before 4 o’clock'},{t:'Delete the presentation'},{t:'Send the deck tomorrow'}]},
+
+  /* ---- Organisation, time & project management ---- */
+  {type:'org', q:'You have five tasks due today and can’t finish them all. The best first step is:', o:[{t:'Prioritise by urgency and impact, then tell the client what you’ll deliver and when',c:true},{t:'Do the easiest ones only'},{t:'Do them in the order they arrived regardless of urgency'},{t:'Say nothing and miss some silently'}]},
+  {type:'org', q:'A recurring weekly report takes you an hour each time. A strong VA would:', o:[{t:'Build a reusable template or process to speed it up and reduce errors',c:true},{t:'Start from scratch every week'},{t:'Skip it when busy'},{t:'Ask the client to do it'}]},
+  {type:'org', q:'"SOP" in a VA context means:', o:[{t:'Standard Operating Procedure — documented steps for a repeatable task',c:true},{t:'Single Online Payment'},{t:'Start Of Period'},{t:'System Operator Password'}]},
+  {type:'org', q:'A client gives a large vague project ("sort out our files"). The best move is:', o:[{t:'Break it into clear steps, propose a plan, and confirm priorities before starting',c:true},{t:'Start deleting files immediately'},{t:'Wait indefinitely for more detail'},{t:'Do a tiny part and call it done'}]},
+  {type:'org', q:'You manage tasks for three clients at once. The most reliable system is:', o:[{t:'A single task list/tool with deadlines and priorities, reviewed daily',c:true},{t:'Memory alone'},{t:'Doing whoever messaged most recently'},{t:'A pile of sticky notes'}]},
+  {type:'org', q:'A task depends on the client sending you a file they haven’t. You should:', o:[{t:'Follow up with a clear, polite reminder and note it as blocked',c:true},{t:'Wait silently and miss the deadline'},{t:'Mark it complete anyway'},{t:'Invent the data yourself'}]},
+  {type:'org', q:'Time-blocking means:', o:[{t:'Assigning specific time slots to specific tasks in your day',c:true},{t:'Blocking a client’s number'},{t:'Working with no schedule'},{t:'Taking the whole day off'}]},
+
+  /* ---- Autonomy, judgment & professionalism (separates the levels) ---- */
+  {type:'autonomy', q:'You find a faster way to do a task the client assigned a slower way. You should:', o:[{t:'Suggest the improvement to the client with a brief reason, then follow their decision',c:true},{t:'Silently change it without telling them'},{t:'Keep doing it the slow way and never mention it'},{t:'Argue until they agree'}]},
+  {type:'autonomy', q:'You make a mistake that the client hasn’t noticed yet. The professional action is:', o:[{t:'Tell them promptly, fix it, and note how you’ll prevent it next time',c:true},{t:'Hide it and hope'},{t:'Blame a tool'},{t:'Wait for them to find it'}]},
+  {type:'autonomy', q:'A client shares confidential customer data for a task. You must:', o:[{t:'Keep it secure and confidential, use it only for the task, and never share it',c:true},{t:'Post about the project on social media'},{t:'Store it in a public folder'},{t:'Share it with other clients as an example'}]},
+  {type:'autonomy', q:'The clearest sign of a higher-level (more senior) VA is that they:', o:[{t:'Own outcomes — anticipate needs, manage processes, and need little supervision',c:true},{t:'Only ever do exactly what’s spelled out, step by step'},{t:'Wait to be told every single action'},{t:'Avoid making any decisions at all'}]},
+  {type:'autonomy', q:'A client is unresponsive and a genuinely urgent decision is needed within your agreed authority. You should:', o:[{t:'Make the reasonable call within your remit, document it, and inform the client as soon as possible',c:true},{t:'Do nothing and let the deadline pass'},{t:'Make a major unauthorised decision outside your remit'},{t:'Keep messaging every minute'}]},
+  {type:'autonomy', q:'You’re asked to do something you don’t yet know how to do. The best response is:', o:[{t:'Research it, attempt it, and ask a specific question only if still stuck',c:true},{t:'Say you can’t and stop'},{t:'Pretend you did it'},{t:'Guess and never check'}]},
+  {type:'autonomy', q:'A client asks you to leave a fake 5-star review for their business under a made-up name. You should:', o:[{t:'Politely decline — fake reviews are deceptive — and offer to help gather genuine reviews instead',c:true},{t:'Write several under different names'},{t:'Do it quietly'},{t:'Ask other staff to post them too'}]}
+];
+
+/* ============================================================
+   FIT / BACKGROUND  (flagged, not scored right/wrong)
+   ============================================================ */
+const FIT = [
+  {id:'experience', q:'How much virtual assistant / admin support experience do you have?', o:['3+ years','1–3 years','Under 1 year','None yet'], flagIf:{'None yet':'soft'}},
+  {id:'nightshift', q:'These roles follow Australian business hours, so the day starts early (often around 6–7 AM). Can you reliably start that early, every shift?', o:['Yes','No','Depends on the details'], flagIf:{'No':'hard'}},
+  {id:'attendance', q:'Can you reliably commit to your assigned schedule and be on time every day?', o:['Yes, always','Most of the time','No'], flagIf:{'No':'hard','Most of the time':'soft'}},
+  {id:'internet', q:'You’ll be working from home. Do you have stable internet, a quiet space, and a backup for power or internet during brownouts?', o:['Yes, all three','Internet only, no backup','No'], flagIf:{'No':'hard','Internet only, no backup':'soft'}},
+  {id:'autonomy', q:'How do you prefer to work?', o:['I take ownership and work independently','I like some guidance but can self-manage','I prefer step-by-step instructions for most tasks','I need close supervision'], flagIf:{'I need close supervision':'soft'}},
+  {id:'tools', q:'Which best describes your software comfort (Office, Google Workspace, PM & comms tools, AI)?', o:['Advanced – I pick up new tools quickly','Comfortable with most','Basic','Limited'], flagIf:{'Limited':'soft'}},
+  {id:'start', q:'How soon can you start?', o:['Immediately','1–2 weeks','2–4 weeks','More than a month'], flagIf:{}}
+];
+
+/* ============================================================
+   Send a submission to the People Hub API
+   ============================================================ */
+async function saveSubmission(rec){
+  if(!CONFIG.apiEndpoint){ console.warn('No apiEndpoint set — submission not saved.'); return; }
+  try{
+    await fetch(CONFIG.apiEndpoint, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(rec)});
+  }catch(e){ console.error('Submission failed:', e); }
+}
+
+/* ============================================================
+   App
+   ============================================================ */
+const app = document.getElementById('app');
+document.getElementById('brandName').textContent = CONFIG.companyName;
+document.getElementById('footNote').textContent = CONFIG.apiEndpoint
+  ? 'Your answers are sent securely to our hiring team.'
+  : 'Setup note: paste your People Hub API URL into config.js before going live.';
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+let state = {};
+function resetState(){
+  const sampled = shuffle(BANK).slice(0, Math.min(CONFIG.numQuestions, BANK.length)).map(q => ({...q, o: shuffle(q.o)}));
+  state = {candidate:{name:'',email:'',phone:''}, fit:{}, fitIdx:0, questions:sampled, qIdx:0, answers:{}, timeLeft:CONFIG.timeLimitSeconds, timer:null, startedAt:null};
+}
+
+function renderIntro(){
+  const mins=Math.round(CONFIG.timeLimitSeconds/60);
+  app.innerHTML = `
+  <div class="card">
+    <div class="eyebrow">Now hiring</div>
+    <h1>${esc(CONFIG.roleTitle)}</h1>
+    <p class="lead">This assessment has ${CONFIG.numQuestions} questions and a ${mins}-minute limit. It measures core admin, software breadth, communication, organisation, and independent judgment — and places you at a VA level based on your result.</p>
+    <div class="preview"><div class="preview-title">What this role really involves</div><ul>${CONFIG.jobPreview.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+    <label class="field"><span>Full name</span><input id="c_name" type="text" autocomplete="name" placeholder="Juan Dela Cruz"></label>
+    <label class="field"><span>Email</span><input id="c_email" type="email" autocomplete="email" placeholder="you@email.com"></label>
+    <label class="field"><span>Mobile number</span><input id="c_phone" type="tel" autocomplete="tel" placeholder="09xx xxx xxxx"></label>
+    <button class="btn btn-primary" id="startBtn" disabled>Start assessment</button>
+  </div>`;
+  const n=document.getElementById('c_name'),e=document.getElementById('c_email'),p=document.getElementById('c_phone'),b=document.getElementById('startBtn');
+  const chk=()=>{b.disabled=!(n.value.trim()&&e.value.trim()&&p.value.trim());};
+  [n,e,p].forEach(el=>el.addEventListener('input',chk));
+  b.addEventListener('click',()=>{state.candidate={name:n.value.trim(),email:e.value.trim(),phone:p.value.trim()};renderFit();});
+}
+
+function renderFit(){
+  const i=state.fitIdx, item=FIT[i];
+  app.innerHTML = `
+  <div class="card">
+    <div class="steps">${segs(0)}</div>
+    <div class="qcount">About you · ${i+1} of ${FIT.length}</div>
+    <div class="qtext">${esc(item.q)}</div>
+    <div class="options" id="opts">${item.o.map(t=>`<label class="opt"><input type="radio" name="fit" value="${esc(t)}"><span>${esc(t)}</span></label>`).join('')}</div>
+    <div class="navrow">${i>0?'<button class="btn btn-ghost" id="back">Back</button>':''}<button class="btn btn-primary" id="next" disabled>${i===FIT.length-1?'Continue to test':'Next'}</button></div>
+  </div>`;
+  wireOptions(()=>{document.getElementById('next').disabled=false;});
+  const pre=state.fit[item.id];
+  if(pre!==undefined){const lbl=[...document.querySelectorAll('#opts .opt')].find(l=>l.querySelector('input').value===pre);if(lbl){lbl.classList.add('sel');lbl.querySelector('input').checked=true;document.getElementById('next').disabled=false;}}
+  document.getElementById('next').addEventListener('click',()=>{state.fit[item.id]=document.querySelector('input[name=fit]:checked').value;if(i===FIT.length-1){startTest();}else{state.fitIdx++;renderFit();}});
+  const back=document.getElementById('back'); if(back) back.addEventListener('click',()=>{state.fitIdx--;renderFit();});
+}
+
+function startTest(){
+  state.startedAt=Date.now(); state.timeLeft=CONFIG.timeLimitSeconds; state.qIdx=0;
+  if(state.timer) clearInterval(state.timer);
+  state.timer=setInterval(()=>{state.timeLeft--;updateTimer();if(state.timeLeft<=0){clearInterval(state.timer);finishTest(true);}},1000);
+  renderQuestion();
+}
+function updateTimer(){
+  const t=document.getElementById('timerVal'),f=document.getElementById('timerFill'); if(!t||!f) return;
+  const m=Math.floor(state.timeLeft/60),s=state.timeLeft%60; t.textContent=`${m}:${String(s).padStart(2,'0')}`;
+  const pct=Math.max(0,state.timeLeft/CONFIG.timeLimitSeconds*100); f.style.width=pct+'%';
+  f.style.background=pct<15?'var(--red)':pct<35?'var(--amber)':'var(--teal)';
+}
+function renderQuestion(){
+  const i=state.qIdx,q=state.questions[i],m=Math.floor(state.timeLeft/60),s=state.timeLeft%60;
+  app.innerHTML = `
+  <div class="card">
+    <div class="steps">${segs(1)}</div>
+    <div class="timer-wrap"><span class="timer-label">Time remaining</span><span class="timer-val" id="timerVal">${m}:${String(s).padStart(2,'0')}</span></div>
+    <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
+    <div class="qcount">Question ${i+1} of ${state.questions.length}</div>
+    <div class="qtext">${esc(q.q)}</div>
+    ${q.passage?`<div class="passage">${esc(q.passage)}</div>`:''}
+    <div class="options" id="opts">${q.o.map((opt,k)=>`<label class="opt" data-k="${k}"><input type="radio" name="q" value="${k}"><span>${esc(opt.t)}</span></label>`).join('')}</div>
+    <div class="navrow"><button class="btn btn-primary" id="next" disabled>${i===state.questions.length-1?'Finish':'Next'}</button></div>
+  </div>`;
+  updateTimer(); wireOptions(()=>{document.getElementById('next').disabled=false;});
+  const pre=state.answers[i];
+  if(pre!==undefined){const lbl=document.querySelector(`#opts .opt[data-k="${pre}"]`);if(lbl){lbl.classList.add('sel');lbl.querySelector('input').checked=true;document.getElementById('next').disabled=false;}}
+  document.getElementById('next').addEventListener('click',()=>{
+    state.answers[i]=parseInt(document.querySelector('input[name=q]:checked').value,10);
+    if(i===state.questions.length-1){clearInterval(state.timer);finishTest(false);}else{state.qIdx++;renderQuestion();}
+  });
+}
+
+/* Builds the per-question answer sheet sent with the submission */
+function buildDetail(){
+  return state.questions.map(function(q,i){
+    var a=state.answers[i];
+    var chosen=(a!==undefined && q.o[a]) ? q.o[a].t : '';
+    var corrOpt=q.o.filter(function(o){return o.c===true;})[0];
+    var corr=corrOpt?corrOpt.t:'';
+    return {n:i+1, type:q.type, q:q.q, passage:q.passage||'', chosen:chosen, correct:corr,
+            ok:(chosen!=='' && chosen===corr)};
+  });
+}
+
+async function finishTest(timedOut){
+  let correct=0; const byType={};
+  state.questions.forEach((q,i)=>{
+    if(!byType[q.type]) byType[q.type]=[0,0];
+    const a=state.answers[i]; const ok=a!==undefined&&q.o[a]&&q.o[a].c===true;
+    byType[q.type][1]++; if(ok){correct++;byType[q.type][0]++;}
+  });
+  const total=state.questions.length, pct=Math.round(correct/total*100);
+  const flags=[];
+  FIT.forEach(f=>{const v=state.fit[f.id];const lvl=f.flagIf[v];if(lvl) flags.push({level:lvl,text:flagText(f.id,v)});});
+
+  // Map score -> VA level. band drives the terminal colour; recommendation carries the exact level.
+  let band, level, recLabel;
+  if(pct>=CONFIG.level3Threshold){ band='strong'; level=3; recLabel='Level 3 — Advanced VA / OBM'; }
+  else if(pct>=CONFIG.level2Threshold){ band='strong'; level=2; recLabel='Level 2 — Specialist VA'; }
+  else if(pct>=CONFIG.level1Threshold){ band='review'; level=1; recLabel='Level 1 — General / Admin VA'; }
+  else { band='below'; level=0; recLabel='Below Level 1 — not yet ready'; }
+  // A hard availability flag caps a strong result at Review for a second look.
+  if(band==='strong' && flags.some(f=>f.level==='hard')) band='review';
+
+  const rec={
+    token:CONFIG.submitToken, exam:'va', role:CONFIG.roleTitle,
+    name:state.candidate.name,email:state.candidate.email,phone:state.candidate.phone,
+    score:pct,correct,total,band,recommendation:recLabel,vaLevel:level,timedOut,
+    byType:Object.fromEntries(Object.entries(byType).map(([k,v])=>[k,v[1]?Math.round(v[0]/v[1]*100):''])),
+    answers:buildDetail(), fit:state.fit, flags, durationSec:state.startedAt?Math.round((Date.now()-state.startedAt)/1000):''
+  };
+  renderDone(recLabel);
+  saveSubmission(rec);
+}
+function flagText(id,v){
+  const map={
+    experience:'No prior VA/admin experience',
+    nightshift:'Cannot start early for AU hours',
+    attendance:v==='No'?'Cannot commit to schedule':'Inconsistent attendance',
+    internet:v==='No'?'No reliable WFH setup':'No power/internet backup',
+    autonomy:'Needs close supervision',
+    tools:'Limited software experience'
+  };
+  return map[id]||(id+': '+v);
+}
+function renderDone(recLabel){
+  if(state.timer) clearInterval(state.timer);
+  app.innerHTML = `
+  <div class="card" style="text-align:center">
+    <div class="done-mark"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+    <h2>Thanks, ${esc(state.candidate.name.split(' ')[0]||'there')} — you’re all set</h2>
+    <p class="lead" style="margin-top:8px">Your assessment has been submitted to our hiring team. If you’re a match for a ${esc(CONFIG.roleTitle)} role, we’ll reach out by email or phone.</p>
+    <p class="muted" style="margin-top:18px">${KIOSK?'Please hand the computer back to our staff.':'You can close this window now.'}</p>
+  </div>`;
+  kioskReturn();
+}
+
+function wireOptions(onPick){
+  document.querySelectorAll('#opts .opt').forEach(lbl=>{
+    lbl.addEventListener('click',()=>{document.querySelectorAll('#opts .opt').forEach(x=>x.classList.remove('sel'));lbl.classList.add('sel');lbl.querySelector('input').checked=true;onPick();});
+  });
+}
+function segs(active){return [0,1].map(i=>`<div class="seg ${i<active?'done':i===active?'active':''}"></div>`).join('');}
+
+var KIOSK = new URLSearchParams(location.search).get('kiosk')==='1';
+function kioskReturn(){ if(KIOSK) setTimeout(function(){ location.href='../kiosk/'; }, 8000); }
+
+function init(){ if(KIOSK){var b=document.querySelector('a.brand'); if(b) b.removeAttribute('href');} resetState(); renderIntro(); }
+init();
+</script>
+</body>
+</html>
