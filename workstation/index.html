@@ -96,6 +96,12 @@
   .tag.risk{color:var(--red);border:1.5px solid var(--red)}
   .tag.move{border:1.5px dashed var(--ink-2)}
   .tag.gone{color:var(--ink-3);border:1px solid var(--rule);text-decoration:line-through}
+  .tag.note{color:var(--ink);border:1px solid var(--ink-3);font-weight:600}
+  .missing{margin-top:22px;padding:10px 12px;border:1px solid var(--kraft-deep);border-radius:3px;background:var(--paper)}
+  .missing p{font-size:.85rem}
+  .missing ul{list-style:none;margin:6px 0 8px}
+  .missing li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 0;border-bottom:1px dotted var(--kraft-deep);font-size:.85rem}
+  .missing li small{font-family:var(--type);color:var(--ink-3);font-size:.78rem}
   .empty{padding:60px 24px;text-align:center;color:var(--ink-2)}
   .empty b{display:block;font-size:1.1rem;color:var(--ink);margin-bottom:6px}
   .empty .row{display:flex;gap:10px;justify-content:center;margin-top:18px}
@@ -166,7 +172,7 @@
     #print td{padding:1.6px 5px;font-size:10px}
     #print td.nm small{font-size:9px}
     #print .tag{font-size:9.5px;border:1px solid #111;border-radius:2px;padding:0 4px;background:none;color:#111}
-    #print .tag.off{background:#e6e6e6;border-color:#bbb}#print .tag.risk{border-width:1.5px}#print .tag.move{border-style:dashed}
+    #print .tag.off{background:#e6e6e6;border-color:#bbb}#print .tag.note{font-weight:600}#print .tag.risk{border-width:1.5px}#print .tag.move{border-style:dashed}
     #print .key{margin-top:6px;display:flex;justify-content:space-between;font-size:9.5px;color:#333}
     #print tr{break-inside:avoid}
   }
@@ -238,6 +244,7 @@
         <div class="cnt" id="cnt"></div>
         <h2 style="margin-top:22px">Changes since last week</h2>
         <ul class="chg" id="chg"></ul>
+        <div class="missing" id="missing" hidden></div>
         <div class="sync" id="sync"><i></i><span></span></div>
       </aside>
     </div>
@@ -312,10 +319,12 @@ function cellHtml(v,full){
   v=String(v||'');
   if(isShift(v)) return `<span class="shift">${shiftLabel(v)}</span>`;
   if(v.startsWith('ACCOUNT:')) return `<span class="tag move">${esc(v.slice(8))}</span>`;
+  if(v.startsWith('NOTE:')) return `<span class="tag note">${esc(v.slice(5))}</span>`;
   const s=STATUS[v]; if(s) return `<span class="tag ${s.kind}">${esc(full?s.label:(s.short||s.label))}</span>`;
   return v?`<span class="shift">${esc(v)}</span>`:'<span class="shift" style="color:var(--ink-3)">—</span>';
 }
-function plain(v){ v=String(v||''); if(isShift(v)) return shiftLabel(v); if(v.startsWith('ACCOUNT:')) return 'moved to '+v.slice(8); return STATUS[v]?STATUS[v].label:v; }
+function plain(v){ v=String(v||''); if(isShift(v)) return shiftLabel(v); if(v.startsWith('ACCOUNT:')) return 'moved to '+v.slice(8); if(v.startsWith('NOTE:')) return v.slice(5); return STATUS[v]?STATUS[v].label:v; }
+function usualFor(section){ const d=(SET.sectionDefaults||{})[section]||{}; return {weekday:d.weekday||SET.defaultWeekday, saturday:d.saturday||SET.defaultSaturday}; }
 
 /* ---------- auth ---------- */
 let SETUP=false;
@@ -423,12 +432,28 @@ function renderSide(people){
   const items=[], prev=D.prevRows||{}, byId={}; D.staff.forEach(s=>byId[s.id]=s);
   people.forEach(p=>{ if(!prev[p.id]&&Object.keys(prev).length) items.push([`<b>${esc(p.name)}</b> joins ${esc(p.section)}`, p.startDate?'started '+dm(p.startDate):'' ]); });
   Object.keys(prev).forEach(id=>{ if(!D.rows[id]) items.push([`<b>${esc((byId[id]||{}).name||'Someone')}</b> is no longer on the schedule`, (byId[id]&&byId[id].endDate)?'left '+dm(byId[id].endDate):'' ]); });
-  people.forEach(p=>{ const r=D.rows[p.id]; const days={};
-    r.cells.forEach((v,i)=>{ if(!isShift(v)){ const l=plain(v); (days[l]=days[l]||[]).push(DAYN[i]); } });
+  people.forEach(p=>{ const r=D.rows[p.id]; const days={}; const u=usualFor(p.section);
+    r.cells.forEach((v,i)=>{ if(v===(i===5?u.saturday:u.weekday)) return; if(!isShift(v)){ const l=plain(v); (days[l]=days[l]||[]).push(DAYN[i]); } });
     Object.keys(days).forEach(l=>items.push([`<b>${esc(p.name)}</b> · ${esc(l)}`, days[l].join(', ')]));
     if(!isShift(r.next)) items.push([`<b>${esc(p.name)}</b> · ${esc(plain(r.next))}`,'next Monday']);
   });
   $('chg').innerHTML=items.length?items.map(([a,b])=>`<li>${a}${b?`<small>${esc(b)}</small>`:''}</li>`).join(''):'<li class="none">Everyone on usual shifts.</li>';
+  renderMissing();
+}
+/* active staff who aren't on this week's schedule yet (added after the week was set up) */
+function renderMissing(){
+  const box=$('missing'), end=addDays(WEEK,6);
+  const miss=isEditor()?D.staff.filter(s=>s.active&&!D.rows[s.id]&&(!s.startDate||s.startDate<=end)).sort((a,b)=>a.order-b.order):[];
+  if(!miss.length||!Object.keys(D.rows).length){ box.hidden=true; return; }
+  box.hidden=false;
+  box.innerHTML=`<p><b>Not on this week yet</b></p><ul>`+miss.map(s=>`<li><span>${esc(s.name)} <small>${esc(s.section)}</small></span><button class="btn sm" data-add="${esc(s.id)}">Add</button></li>`).join('')+`</ul>${miss.length>1?`<button class="btn sm primary" data-addall>Add all ${miss.length}</button>`:''}`;
+  box.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>addToWeek([b.dataset.add]));
+  const all=box.querySelector('[data-addall]'); if(all) all.onclick=()=>addToWeek(miss.map(s=>s.id));
+}
+async function addToWeek(ids){
+  setSync('busy','Adding to this week…');
+  try{ const r=await api('saveCells',{weekStart:WEEK,changes:ids.map(id=>({staffId:id,day:'add'}))}); if(!r.ok) throw new Error(r.error); D=r; renderWeek(); toast(ids.length===1?'Added with their usual shifts.':ids.length+' people added with their usual shifts.'); }
+  catch(e){ setSync('bad',e.message); toast(e.message); }
 }
 async function createWeek(mode){
   setSync('busy','Setting up the week…');
@@ -450,12 +475,13 @@ function openPop(btn){
   const dayName=POP.day==='next'?'Next Monday':DAYN[+POP.day]+' '+dateOf(addDays(WEEK,+POP.day)).getDate();
   const accts=SET.sections.filter(s=>s!==p.section&&s!=='Admin');
   const opt=(v,l,hint)=>`<button class="opt${v===cur?' on':''}" data-v="${esc(v)}">${esc(l)}${hint?`<b>${esc(hint)}</b>`:''}</button>`;
-  const usual=POP.day==='5'?SET.defaultSaturday:SET.defaultWeekday;
+  const uf=usualFor(p.section), usual=POP.day==='5'?uf.saturday:uf.weekday;
   const pop=$('pop');
   pop.innerHTML=`<h4>${esc(dayName)} · ${esc(p.name)}</h4>`+
     SET.shifts.map(s=>opt(s,shiftLabel(s),s===usual?'usual':'')).join('')+
     `<div class="custom"><input type="time" id="cA" aria-label="Start time" value="07:00"><span>–</span><input type="time" id="cB" aria-label="End time" value="16:30"><button class="btn sm" id="cSet">Set</button></div><hr>`+
-    STATUS_ORDER.map(k=>opt(k,STATUS[k].label)).join('')+
+    STATUS_ORDER.map(k=>opt(k,STATUS[k].label,(k===usual)?'usual':'')).join('')+
+    `<div class="custom"><input type="text" id="nT" aria-label="Note" placeholder="Other, e.g. HR meeting 9AM" maxlength="40" style="width:200px" value="${cur.startsWith('NOTE:')?esc(cur.slice(5)):''}"><button class="btn sm" id="nSet">Set</button></div>`+
     (accts.length?`<hr><h4>Moved to account</h4>`+accts.map(a=>opt('ACCOUNT:'+a,a)).join(''):'')+
     `<hr><button class="opt" data-resign style="color:var(--red)">Resigned…</button>`;
   pop.hidden=false; btn.setAttribute('aria-expanded','true');
@@ -468,6 +494,7 @@ function closePop(){ const pop=$('pop'); if(POP&&POP.btn) POP.btn.setAttribute('
 $('pop').addEventListener('click',e=>{
   if(!POP) return;
   const o=e.target.closest('.opt');
+  if(e.target.id==='nSet'){ const t=$('nT').value.trim(); if(!t){toast('Type a short note first.');return;} return setCell('NOTE:'+t); }
   if(e.target.id==='cSet'){ const a=$('cA').value,b=$('cB').value; if(!a||!b||a>=b){toast('End time must be after start time.');return;} return setCell(a+'-'+b); }
   if(e.target.closest('[data-resign]')){
     const p=D.staff.find(s=>s.id===POP.id)||{}; const dn=POP.day==='next'?'next Monday':DAYN[+POP.day];
